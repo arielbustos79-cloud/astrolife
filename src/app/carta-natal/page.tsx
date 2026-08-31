@@ -180,13 +180,25 @@ export default function CartaNatalPage() {
 
           <PlanetList chart={chart} />
 
-          <div className="px-5 pb-2 pt-4">
+          <div className="px-5 pb-2 pt-4 flex flex-col gap-2">
             <Link
               href="/astrid"
               className="flex items-center justify-center gap-2 rounded-full border border-violet/40 bg-gradient-to-br from-violet/30 to-gold/20 px-4 py-3.5 text-[13px] font-medium text-ink"
             >
               ✨ Interpretar con Astrid
             </Link>
+            {!guardado && (
+              <p className="text-center text-[11px] text-ink-muted">
+                Guarda tu carta para acceder a Astrid, horóscopo y tránsitos.{" "}
+                <button
+                  type="button"
+                  onClick={() => setShowModal(true)}
+                  className="text-gold underline underline-offset-2"
+                >
+                  Guardar gratis
+                </button>
+              </p>
+            )}
           </div>
         </>
       )}

@@ -21,8 +21,13 @@ export function ModalGuardarCarta({ onGuardar, onContinuar }: ModalGuardarCartaP
     try {
       await onGuardar(email.trim());
       setSent(true);
-    } catch {
-      setError("No se pudo enviar el enlace. Intenta de nuevo.");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error desconocido";
+      if (msg.toLowerCase().includes("rate limit") || msg.includes("429")) {
+        setError("Demasiados intentos. Espera unos minutos e intenta de nuevo.");
+      } else {
+        setError(`No se pudo enviar el enlace: ${msg}`);
+      }
     } finally {
       setSending(false);
     }
