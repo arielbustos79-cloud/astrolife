@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #100a1a;
+  --surface: #18102a;
+  --surface-2: #201535;
+  --gold: #c8a96e;
+  --gold-dim: #9c7f4f;
+  --violet: #7b6fa0;
+  --violet-dim: #5a5078;
+  --text: #f0ede8;
+  --text-muted: #888880;
+  --border: #2a1f3d;
+
+  --home-bg: #ede8e0;
+  --chat-bg: #f5f2ed;
+  --chat-text: #1a1020;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
+  --color-violet: var(--violet);
+  --color-violet-dim: var(--violet-dim);
+  --color-ink: var(--text);
+  --color-ink-muted: var(--text-muted);
+  --color-line: var(--border);
+
+  --color-home-bg: var(--home-bg);
+  --color-chat-bg: var(--chat-bg);
+  --color-chat-ink: var(--chat-text);
+
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-ui: var(--font-inter), system-ui, sans-serif;
+
+  --radius-tiny: 4px;
+  --radius-btn: 10px;
+  --radius-card: 18px;
+}
+
+html {
+  /* Reserve the scrollbar gutter on every page so the centered app column
+     and the fixed bottom nav (centered against the full viewport) always
+     agree on the available width, whether or not a given page scrolls. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+}
