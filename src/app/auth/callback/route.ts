@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     },
   );
 
-  // token_hash flow: link opens in any browser (no cookie needed)
+  // token_hash flow (explicit template override)
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as "magiclink" | "email" | null;
   if (tokenHash && type) {
@@ -31,11 +31,19 @@ export async function GET(request: NextRequest) {
     if (!error) return NextResponse.redirect(`${origin}/inicio`);
   }
 
-  // PKCE code flow: fallback for same-browser sessions
+  // PKCE code flow (same-browser)
   const code = searchParams.get("code");
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) return NextResponse.redirect(`${origin}/inicio`);
+  }
+
+  // Implicit flow: token arrives in URL hash (client-side only).
+  // Redirect to a client page that reads the hash and finalizes the session.
+  const hasImplicitParams =
+    searchParams.get("access_token") ?? searchParams.get("error_description");
+  if (hasImplicitParams) {
+    return NextResponse.redirect(`${origin}/auth/session`);
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth`);
