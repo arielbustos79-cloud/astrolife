@@ -66,7 +66,7 @@ export default function LandingPage() {
         </p>
 
         <Link
-          href="/inicio"
+          href="/login"
           className="mb-4 w-full max-w-[280px] rounded-full py-4 text-center text-[15px] font-semibold transition-opacity hover:opacity-[.88]"
           style={{ background: "#C8A96E", color: "#100A1A" }}
         >

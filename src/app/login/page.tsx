@@ -103,9 +103,8 @@ export default function LoginPage() {
       </div>
 
       <p className="mt-6 text-[13px] text-ink-muted">
-        ¿Primera vez?{" "}
-        <Link href="/inicio" className="text-gold hover:underline">
-          Comienza gratis →
+        <Link href="/" className="text-ink-muted hover:text-ink">
+          ← Volver al inicio
         </Link>
       </p>
     </div>
