@@ -172,7 +172,18 @@ export default function AstridPage() {
 
   return (
     <div className="flex h-svh flex-col bg-chat-bg text-chat-ink">
-      <NavHeader variant="dark" />
+      <NavHeader
+        variant="dark"
+        centerContent={
+          <>
+            <p className="font-display text-lg font-bold text-ink">Astrid</p>
+            <p className="flex items-center gap-1 text-[12px]" style={{ color: "#7BC47B" }}>
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#7BC47B]" />
+              En línea
+            </p>
+          </>
+        }
+      />
 
       {natalChart && (
         <p className="flex-shrink-0 bg-bg pb-2.5 text-center text-[11px] text-gold">

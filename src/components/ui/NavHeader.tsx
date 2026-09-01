@@ -1,11 +1,13 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { UserMenu } from "./UserMenu";
 
 type NavHeaderProps = {
   variant?: "light" | "dark";
+  centerContent?: ReactNode;
 };
 
-export function NavHeader({ variant = "dark" }: NavHeaderProps) {
+export function NavHeader({ variant = "dark", centerContent }: NavHeaderProps) {
   const isLight = variant === "light";
 
   const bg = isLight
@@ -14,8 +16,12 @@ export function NavHeader({ variant = "dark" }: NavHeaderProps) {
 
   return (
     <header
-      className="sticky top-0 z-50 flex items-center justify-between px-5 py-3"
-      style={{ background: bg, backdropFilter: "blur(8px)" }}
+      className="sticky top-0 z-50 grid items-center px-5 py-3"
+      style={{
+        background: bg,
+        backdropFilter: "blur(8px)",
+        gridTemplateColumns: "1fr auto 1fr",
+      }}
     >
       <Link href="/" className="flex items-center gap-2">
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -34,7 +40,12 @@ export function NavHeader({ variant = "dark" }: NavHeaderProps) {
           AstroLife
         </span>
       </Link>
-      <UserMenu isLight={isLight} />
+      <div className="flex flex-col items-center">
+        {centerContent}
+      </div>
+      <div className="flex justify-end">
+        <UserMenu isLight={isLight} />
+      </div>
     </header>
   );
 }
