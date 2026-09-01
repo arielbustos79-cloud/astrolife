@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { UserMenu } from "./UserMenu";
 
 type NavHeaderProps = {
@@ -16,7 +17,7 @@ export function NavHeader({ variant = "dark" }: NavHeaderProps) {
       className="sticky top-0 z-50 flex items-center justify-between px-5 py-3"
       style={{ background: bg, backdropFilter: "blur(8px)" }}
     >
-      <div className="flex items-center gap-2">
+      <Link href="/" className="flex items-center gap-2">
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
           <circle cx="14" cy="14" r="13" stroke="#9C7F4F" strokeWidth="1.5" />
           <path
@@ -32,7 +33,7 @@ export function NavHeader({ variant = "dark" }: NavHeaderProps) {
         >
           AstroLife
         </span>
-      </div>
+      </Link>
       <UserMenu isLight={isLight} />
     </header>
   );

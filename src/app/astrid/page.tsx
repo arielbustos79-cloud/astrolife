@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ChatBubble, TypingBubble, type ChatBubbleMessage } from "@/components/astrid/ChatBubble";
+import { NavHeader } from "@/components/ui/NavHeader";
 import { ChatInput } from "@/components/astrid/ChatInput";
 import {
   welcomeFirstTime,
@@ -172,19 +172,7 @@ export default function AstridPage() {
 
   return (
     <div className="flex h-svh flex-col bg-chat-bg text-chat-ink">
-      <div className="flex flex-shrink-0 items-center gap-3 bg-bg px-5 py-3">
-        <Link href="/" className="text-[14px] text-[#888880]">
-          ← AstroLife
-        </Link>
-        <div className="flex-1 text-center">
-          <p className="font-display text-lg font-bold text-ink">Astrid</p>
-          <p className="flex items-center justify-center gap-1 text-xs text-[#7BC47B]">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#7BC47B]" />
-            En línea
-          </p>
-        </div>
-        <span className="w-6" />
-      </div>
+      <NavHeader variant="dark" />
 
       {natalChart && (
         <p className="flex-shrink-0 bg-bg pb-2.5 text-center text-[11px] text-gold">
