@@ -65,18 +65,52 @@ export default function CartaNatalPage() {
   );
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as BirthFormData;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setBirthData(parsed);
-        void loadChart(parsed, false); // no modal on auto-load
-      } catch {
-        window.localStorage.removeItem(BIRTH_DATA_STORAGE_KEY);
+    const init = async () => {
+      // 1. Try localStorage first (fast path)
+      const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as BirthFormData;
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setBirthData(parsed);
+          void loadChart(parsed, false);
+          setHydrated(true);
+          return;
+        } catch {
+          window.localStorage.removeItem(BIRTH_DATA_STORAGE_KEY);
+        }
       }
-    }
-    setHydrated(true);
+
+      // 2. No localStorage — try Supabase if user has session
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: carta } = await supabase
+          .from("carta_natal")
+          .select("nombre,fecha_nacimiento,hora_nacimiento,lugar_nacimiento,utc_offset")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+
+        if (carta) {
+          const [lat, lon] = (carta.lugar_nacimiento as string).split(",").map(Number);
+          const parsed: BirthFormData = {
+            name: (carta.nombre as string | null) ?? "",
+            date: carta.fecha_nacimiento as string,
+            time: carta.hora_nacimiento as string,
+            utcOffsetHours: carta.utc_offset as number,
+            latitude: lat,
+            longitude: lon,
+          };
+          window.localStorage.setItem(BIRTH_DATA_STORAGE_KEY, JSON.stringify(parsed));
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setBirthData(parsed);
+          void loadChart(parsed, false);
+        }
+      }
+
+      setHydrated(true);
+    };
+    void init();
   }, [loadChart]);
 
   function handleSubmit(data: BirthFormData) {

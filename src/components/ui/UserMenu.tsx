@@ -18,20 +18,39 @@ export function UserMenu({ isLight }: { isLight: boolean }) {
     const supabase = createClient();
 
     const loadSession = async () => {
+      let session = null;
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data } = await supabase.auth.getSession();
+        session = data.session;
         setEmail(session?.user?.email ?? null);
       } catch {
         setEmail(null);
       }
 
+      // Try localStorage first for the name
       try {
         const raw = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw) as BirthFormData;
-          if (parsed.name?.trim()) setNombre(parsed.name.trim());
+          if (parsed.name?.trim()) {
+            setNombre(parsed.name.trim());
+            return;
+          }
         }
-      } catch { /* no name available */ }
+      } catch { /* continue to Supabase */ }
+
+      // Fallback: query carta_natal.nombre from Supabase
+      if (session) {
+        try {
+          const { data: carta } = await supabase
+            .from("carta_natal")
+            .select("nombre")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+          const nombre = (carta as { nombre?: string | null } | null)?.nombre;
+          if (nombre?.trim()) setNombre(nombre.trim());
+        } catch { /* no name available */ }
+      }
     };
 
     void loadSession();

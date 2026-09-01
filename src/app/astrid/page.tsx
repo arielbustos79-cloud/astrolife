@@ -45,39 +45,63 @@ export default function AstridPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setChatStartedAt(t);
 
-    const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
-    const hasBirthData = Boolean(stored);
-    let parsedData: BirthFormData | null = null;
+    const init = async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
 
-    if (stored) {
-      try {
-        parsedData = JSON.parse(stored) as BirthFormData;
-        setBirthData(parsedData);
-        getNatalChart(parsedData)
-          .then((chart) => setNatalChart(chart))
-          .catch(() => { /* Astrid works without chart */ });
-      } catch {
-        window.localStorage.removeItem(BIRTH_DATA_STORAGE_KEY);
+      // 1. Try localStorage
+      let parsedData: BirthFormData | null = null;
+      const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
+      if (stored) {
+        try {
+          parsedData = JSON.parse(stored) as BirthFormData;
+        } catch {
+          window.localStorage.removeItem(BIRTH_DATA_STORAGE_KEY);
+        }
       }
-    }
 
-    if (!hasBirthData) {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === WELCOME_ID
-            ? { ...m, time: t, text: ASTRID_WELCOME_MESSAGE_NO_CHART, cta: { label: "Ir a Carta Natal", href: "/carta-natal" } }
-            : m,
-        ),
-      );
-      return;
-    }
+      // 2. If no localStorage but has session → load from Supabase
+      if (!parsedData && session) {
+        const { data: carta } = await supabase
+          .from("carta_natal")
+          .select("nombre,fecha_nacimiento,hora_nacimiento,lugar_nacimiento,utc_offset")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
 
-    // Check Supabase for first-time vs returning user
-    const supabase = createClient();
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      const name = parsedData?.name?.trim() || null;
+        if (carta) {
+          const [lat, lon] = (carta.lugar_nacimiento as string).split(",").map(Number);
+          parsedData = {
+            name: (carta.nombre as string | null) ?? "",
+            date: carta.fecha_nacimiento as string,
+            time: carta.hora_nacimiento as string,
+            utcOffsetHours: carta.utc_offset as number,
+            latitude: lat,
+            longitude: lon,
+          };
+          window.localStorage.setItem(BIRTH_DATA_STORAGE_KEY, JSON.stringify(parsedData));
+        }
+      }
+
+      // 3. If still no birth data → show no-chart welcome
+      if (!parsedData) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === WELCOME_ID
+              ? { ...m, time: t, text: ASTRID_WELCOME_MESSAGE_NO_CHART, cta: { label: "Ir a Carta Natal", href: "/carta-natal" } }
+              : m,
+          ),
+        );
+        return;
+      }
+
+      // 4. Calculate chart from birth data
+      setBirthData(parsedData);
+      getNatalChart(parsedData)
+        .then((chart) => setNatalChart(chart))
+        .catch(() => { /* Astrid works without chart */ });
+
+      // 5. Check first-time vs returning
       let esPrimeraVez = true;
-
       if (session) {
         const { data: historial } = await supabase
           .from("chat_astrid")
@@ -85,20 +109,19 @@ export default function AstridPage() {
           .eq("user_id", session.user.id)
           .limit(1)
           .maybeSingle();
-
         esPrimeraVez = !historial;
       }
 
-      const welcomeText = esPrimeraVez
-        ? welcomeFirstTime(name)
-        : welcomeReturning(name);
-
+      const name = parsedData.name?.trim() || null;
+      const welcomeText = esPrimeraVez ? welcomeFirstTime(name) : welcomeReturning(name);
       setMessages((prev) =>
         prev.map((m) =>
           m.id === WELCOME_ID ? { ...m, time: t, text: welcomeText } : m,
         ),
       );
-    });
+    };
+
+    void init();
   }, []);
 
   useEffect(() => {
