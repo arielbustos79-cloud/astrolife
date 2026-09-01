@@ -1,8 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = ["/inicio", "/astrid", "/transitos"];
-
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -32,14 +30,20 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const isProtected = PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
 
-  if (!user && isProtected) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    return NextResponse.redirect(loginUrl);
+  // /astrid solo con sesión — redirige a /carta-natal (no a /login)
+  if (!user && pathname.startsWith("/astrid")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/carta-natal";
+    url.searchParams.set("prompt", "astrid");
+    return NextResponse.redirect(url);
+  }
+
+  // /login con sesión activa → redirige a /inicio
+  if (user && pathname === "/login") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/inicio";
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;

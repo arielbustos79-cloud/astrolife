@@ -5,14 +5,16 @@ import Link from "next/link";
 import { ChatBubble, TypingBubble, type ChatBubbleMessage } from "@/components/astrid/ChatBubble";
 import { ChatInput } from "@/components/astrid/ChatInput";
 import {
+  welcomeFirstTime,
+  welcomeReturning,
   ASTRID_WELCOME_MESSAGE_NO_CHART,
-  ASTRID_WELCOME_MESSAGE_WITH_CHART,
   type AstridChatMessage,
 } from "@/lib/anthropic/astrid";
 import { getNatalChart } from "@/lib/astro/actions";
 import type { NatalChart } from "@/lib/astro/ephemeris";
 import { BIRTH_DATA_STORAGE_KEY } from "@/lib/astro/storage";
 import type { BirthFormData } from "@/components/carta/BirthDataForm";
+import { createClient } from "@/lib/supabase/client";
 
 const SUGGESTIONS = ["¿Y en el amor?", "Ver mis tránsitos", "¿Qué dice Venus?"];
 
@@ -41,45 +43,64 @@ export default function AstridPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // The clock and localStorage can't be read during SSR without risking a
-    // mismatch against the client, so both the timestamp and the
-    // chart-dependent welcome message are filled in here, post-mount.
     const t = nowLabel();
-    const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
-    const hasBirthData = Boolean(stored);
-
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setChatStartedAt(t);
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === WELCOME_ID
-          ? {
-              ...m,
-              time: t,
-              text: hasBirthData ? ASTRID_WELCOME_MESSAGE_WITH_CHART : ASTRID_WELCOME_MESSAGE_NO_CHART,
-              cta: hasBirthData ? undefined : { label: "Ir a Carta Natal", href: "/carta-natal" },
-            }
-          : m,
-      ),
-    );
+
+    const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
+    const hasBirthData = Boolean(stored);
+    let parsedData: BirthFormData | null = null;
 
     if (stored) {
       try {
-        const parsed = JSON.parse(stored) as BirthFormData;
-        setBirthData(parsed);
-        getNatalChart(parsed)
-          .then((chart) => {
-            console.log("[astrid/page] natalChart calculated:", chart);
-            console.log("[astrid/page] birthData (name, date):", parsed.name, parsed.date);
-            setNatalChart(chart);
-          })
-          .catch(() => {
-            /* no natal chart available; Astrid still works without it */
-          });
+        parsedData = JSON.parse(stored) as BirthFormData;
+        setBirthData(parsedData);
+        getNatalChart(parsedData)
+          .then((chart) => setNatalChart(chart))
+          .catch(() => { /* Astrid works without chart */ });
       } catch {
         window.localStorage.removeItem(BIRTH_DATA_STORAGE_KEY);
       }
     }
+
+    if (!hasBirthData) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === WELCOME_ID
+            ? { ...m, time: t, text: ASTRID_WELCOME_MESSAGE_NO_CHART, cta: { label: "Ir a Carta Natal", href: "/carta-natal" } }
+            : m,
+        ),
+      );
+      return;
+    }
+
+    // Check Supabase for first-time vs returning user
+    const supabase = createClient();
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      const name = parsedData?.name?.trim() || null;
+      let esPrimeraVez = true;
+
+      if (session) {
+        const { data: historial } = await supabase
+          .from("chat_astrid")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .limit(1)
+          .maybeSingle();
+
+        esPrimeraVez = !historial;
+      }
+
+      const welcomeText = esPrimeraVez
+        ? welcomeFirstTime(name)
+        : welcomeReturning(name);
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === WELCOME_ID ? { ...m, time: t, text: welcomeText } : m,
+        ),
+      );
+    });
   }, []);
 
   useEffect(() => {

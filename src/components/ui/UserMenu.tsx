@@ -4,9 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { BIRTH_DATA_STORAGE_KEY } from "@/lib/astro/storage";
+import type { BirthFormData } from "@/components/carta/BirthDataForm";
 
 export function UserMenu({ isLight }: { isLight: boolean }) {
   const [email, setEmail] = useState<string | null | undefined>(undefined);
+  const [nombre, setNombre] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -21,6 +24,14 @@ export function UserMenu({ isLight }: { isLight: boolean }) {
       } catch {
         setEmail(null);
       }
+
+      try {
+        const raw = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as BirthFormData;
+          if (parsed.name?.trim()) setNombre(parsed.name.trim());
+        }
+      } catch { /* no name available */ }
     };
 
     void loadSession();
@@ -56,8 +67,8 @@ export function UserMenu({ isLight }: { isLight: boolean }) {
       <button
         type="button"
         onClick={() => !loading && setOpen((o) => !o)}
-        aria-label="Perfil"
-        className={`flex h-9 w-9 items-center justify-center rounded-full border text-base transition-opacity ${
+        aria-label="Menú"
+        className={`flex h-9 w-9 items-center justify-center rounded-full border transition-opacity ${
           loading ? "opacity-0 pointer-events-none" : "opacity-100"
         } ${
           isLight
@@ -65,21 +76,64 @@ export function UserMenu({ isLight }: { isLight: boolean }) {
             : "border-line bg-surface text-ink"
         }`}
       >
-        👤
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect width="16" height="2" rx="1" fill="currentColor" />
+          <rect y="5" width="16" height="2" rx="1" fill="currentColor" />
+          <rect y="10" width="16" height="2" rx="1" fill="currentColor" />
+        </svg>
       </button>
 
       {open && !loading && (
-        <div className="absolute right-0 top-11 z-50 min-w-[190px] overflow-hidden rounded-[10px] border border-line bg-surface shadow-lg">
+        <div
+          className="absolute right-0 top-12 z-50 min-w-[200px] overflow-hidden rounded-[12px]"
+          style={{
+            background: "#18102A",
+            border: "1px solid #2A1F3D",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+          }}
+        >
           {email ? (
             <>
-              <p className="truncate px-3 py-2.5 text-[11px] text-ink-muted">
-                {email}
+              <p
+                className="px-4 pb-2 pt-3 text-[13px]"
+                style={{ color: "#888880" }}
+              >
+                Hola{nombre ? `, ${nombre}` : ""} 👋
               </p>
-              <div className="border-t border-line" />
+
+              <div style={{ borderTop: "1px solid #2A1F3D", margin: "4px 0" }} />
+
+              <Link
+                href="/inicio"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-3 text-[14px] transition-colors hover:bg-white/5"
+                style={{ color: "#F0EDE8" }}
+              >
+                🌟 Mi horóscopo
+              </Link>
+              <Link
+                href="/astrid"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-3 text-[14px] transition-colors hover:bg-white/5"
+                style={{ color: "#F0EDE8" }}
+              >
+                ✨ Hablar con Astrid
+              </Link>
+              <Link
+                href="/carta-natal"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-3 text-[14px] transition-colors hover:bg-white/5"
+                style={{ color: "#F0EDE8" }}
+              >
+                ⭕ Mi carta natal
+              </Link>
+
+              <div style={{ borderTop: "1px solid #2A1F3D", margin: "4px 0" }} />
+
               <button
                 type="button"
                 onClick={handleLogout}
-                className="w-full px-3 py-2.5 text-left text-[13px] hover:bg-surface-2"
+                className="w-full px-4 py-3 text-left text-[14px] transition-colors hover:bg-white/5"
                 style={{ color: "#E8785A" }}
               >
                 Cerrar sesión
@@ -89,9 +143,10 @@ export function UserMenu({ isLight }: { isLight: boolean }) {
             <Link
               href="/login"
               onClick={() => setOpen(false)}
-              className="block px-3 py-2.5 text-[13px] text-ink hover:bg-surface-2"
+              className="flex items-center justify-between px-4 py-3 text-[14px] transition-colors hover:bg-white/5"
+              style={{ color: "#F0EDE8" }}
             >
-              Iniciar sesión
+              Iniciar sesión <span>→</span>
             </Link>
           )}
         </div>

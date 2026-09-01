@@ -34,11 +34,21 @@ Correcto: "Con ese Mercurio tuyo en Casa 3, las palabras siempre fueron tu forma
 Incorrecto (asume género): "Tu Luna en Virgo te tiene muy analítica últimamente..." / "Entiendo que estás confundida con esto"
 Correcto (neutro): "Tu Luna en Virgo te tiene en modo análisis constante..." / "Entiendo que hay confusión con esto"`;
 
-export const ASTRID_WELCOME_MESSAGE_WITH_CHART =
-  "¡Hola! Soy Astrid 🌙 Ya revisé tu carta natal — hay cosas hermosas ahí. ¿Por dónde quieres que empecemos?";
-
 export const ASTRID_WELCOME_MESSAGE_NO_CHART =
   "¡Hola! Soy Astrid ✨ Para darte una guía más personal, me ayudaría conocer tu carta natal. ¿Quieres cargarla?";
+
+export function welcomeFirstTime(name?: string | null) {
+  const hi = name ? `¡Hola ${name}!` : "¡Hola!";
+  return `${hi} 🌙 Acabo de revisar tu carta natal — hay cosas hermosas ahí. ¿Quieres que te cuente lo más destacado?`;
+}
+
+export function welcomeReturning(name?: string | null) {
+  const hi = name ? `¡Hola ${name}!` : "¡Hola!";
+  return `${hi} 🌙 Ya revisé tu carta natal — ¿por dónde quieres que empecemos hoy?`;
+}
+
+// Legacy export kept for backward compat
+export const ASTRID_WELCOME_MESSAGE_WITH_CHART = welcomeReturning();
 
 export const ASTRID_MODEL = "claude-sonnet-4-6";
 

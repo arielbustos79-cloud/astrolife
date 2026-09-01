@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LandingCta } from "@/components/landing/LandingCta";
 
 const FEATURES = [
   {
@@ -42,7 +43,6 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="flex flex-1 flex-col items-center justify-center px-6 pb-10 pt-8 text-center">
-        {/* Decorative glow */}
         <div
           className="mb-8 flex h-20 w-20 items-center justify-center rounded-full text-4xl"
           style={{
@@ -65,20 +65,7 @@ export default function LandingPage() {
           Astrología real. Personalizada por IA. En español.
         </p>
 
-        <Link
-          href="/carta-natal"
-          className="mb-4 w-full max-w-[280px] rounded-full py-4 text-center text-[15px] font-semibold transition-opacity hover:opacity-[.88]"
-          style={{ background: "#C8A96E", color: "#100A1A" }}
-        >
-          Comenzar gratis →
-        </Link>
-
-        <p className="text-[13px] text-ink-muted">
-          ¿Ya tienes cuenta?{" "}
-          <Link href="/login" style={{ color: "#C8A96E" }} className="underline underline-offset-2">
-            Ingresa aquí
-          </Link>
-        </p>
+        <LandingCta />
       </section>
 
       {/* Features */}

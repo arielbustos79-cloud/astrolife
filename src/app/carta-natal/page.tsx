@@ -122,7 +122,6 @@ export default function CartaNatalPage() {
       {showModal && (
         <ModalGuardarCarta
           onGuardar={handleGuardarConEmail}
-          onContinuar={() => setShowModal(false)}
         />
       )}
 

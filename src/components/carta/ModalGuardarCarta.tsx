@@ -4,10 +4,9 @@ import { useState } from "react";
 
 type ModalGuardarCartaProps = {
   onGuardar: (email: string) => Promise<void>;
-  onContinuar: () => void;
 };
 
-export function ModalGuardarCarta({ onGuardar, onContinuar }: ModalGuardarCartaProps) {
+export function ModalGuardarCarta({ onGuardar }: ModalGuardarCartaProps) {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -38,9 +37,7 @@ export function ModalGuardarCarta({ onGuardar, onContinuar }: ModalGuardarCartaP
       className="fixed inset-0 z-50 flex items-center justify-center px-5"
       style={{ background: "rgba(16, 10, 26, 0.85)", backdropFilter: "blur(4px)" }}
     >
-      <div
-        className="w-full max-w-[360px] rounded-[18px] border border-line bg-surface p-7"
-      >
+      <div className="w-full max-w-[360px] rounded-[18px] border border-line bg-surface p-7">
         {sent ? (
           <div className="text-center">
             <p className="mb-3 text-3xl">📬</p>
@@ -60,7 +57,7 @@ export function ModalGuardarCarta({ onGuardar, onContinuar }: ModalGuardarCartaP
               Tu carta natal está lista
             </p>
             <p className="mb-5 text-[14px] leading-relaxed text-ink-muted">
-              Guárdala con tu email para no perderla la próxima vez.
+              Guarda tu carta para acceder a Astrid y tu horóscopo personalizado.
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -81,14 +78,6 @@ export function ModalGuardarCarta({ onGuardar, onContinuar }: ModalGuardarCartaP
                 {sending ? "Enviando…" : "Guardar gratis →"}
               </button>
             </form>
-
-            <button
-              type="button"
-              onClick={onContinuar}
-              className="mt-4 w-full text-center text-[13px] text-ink-muted underline"
-            >
-              Continuar sin guardar
-            </button>
           </>
         )}
       </div>

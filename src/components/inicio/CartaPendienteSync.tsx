@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { guardarCartaNatal } from "@/lib/supabase/actions";
 import { CARTA_PENDIENTE_KEY } from "@/lib/astro/storage";
@@ -8,6 +9,8 @@ import type { BirthFormData } from "@/components/carta/BirthDataForm";
 import type { NatalChart } from "@/lib/astro/ephemeris";
 
 export function CartaPendienteSync() {
+  const router = useRouter();
+
   useEffect(() => {
     const supabase = createClient();
 
@@ -35,6 +38,8 @@ export function CartaPendienteSync() {
         const result = await guardarCartaNatal(birthData, chart);
         if (result.success) {
           window.localStorage.removeItem(CARTA_PENDIENTE_KEY);
+          // After onboarding flow: take user directly to Astrid
+          router.push("/astrid");
         }
       } catch {
         window.localStorage.removeItem(CARTA_PENDIENTE_KEY);
@@ -42,7 +47,7 @@ export function CartaPendienteSync() {
     };
 
     void checkSession();
-  }, []);
+  }, [router]);
 
   return null;
 }
