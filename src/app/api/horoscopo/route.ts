@@ -34,7 +34,9 @@ Responde SOLO con JSON, sin markdown ni explicaciones:
   "planeta": "planeta destacado del día"
 }
 
-El texto debe ser específico para hoy, no genérico. Máximo 3 oraciones. En español chileno natural.`,
+El texto debe ser específico para hoy, no genérico. Máximo 3 oraciones.
+
+Tono: español latinoamericano natural y elegante. Cercano pero con clase — como una persona culta hablando con un amigo. NUNCA uses modismos, contracciones informales como 'pa', 'po', 've', ni jerga. El tono es cálido, directo y sofisticado.`,
       },
     ],
   });
