@@ -31,14 +31,6 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // /astrid solo con sesión — redirige a /carta-natal (no a /login)
-  if (!user && pathname.startsWith("/astrid")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/carta-natal";
-    url.searchParams.set("prompt", "astrid");
-    return NextResponse.redirect(url);
-  }
-
   // /login con sesión activa → redirige a /inicio
   if (user && pathname === "/login") {
     const url = request.nextUrl.clone();

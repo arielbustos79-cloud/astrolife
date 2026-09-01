@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ZODIAC_SIGNS, getZodiacSign } from "@/lib/zodiac";
 import { getDailyHoroscope } from "@/lib/mock-content";
+import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_KEY = "astrolife:sign";
 const DEFAULT_SIGN = "libra";
@@ -57,8 +58,29 @@ export function SignAndHoroscope() {
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (stored) setSignId(stored);
+    if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSignId(stored);
+      return; // respeta selección manual del usuario
+    }
+
+    // Sin selección manual: precarga el signo solar desde carta natal en Supabase
+    const supabase = createClient();
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return;
+      const { data: carta } = await supabase
+        .from("carta_natal")
+        .select("planetas")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      // planetas.sol.sign.id — estructura guardada por guardarCartaNatal()
+      const solarSignId = (carta?.planetas as { sol?: { sign?: { id?: string } } } | null)?.sol?.sign?.id;
+      if (solarSignId) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSignId(solarSignId);
+      }
+    });
   }, []);
 
   useEffect(() => {
