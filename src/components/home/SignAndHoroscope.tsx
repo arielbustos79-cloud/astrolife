@@ -122,7 +122,7 @@ export function SignAndHoroscope() {
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#4A4540]">
           Tu signo
         </p>
-        <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none]">
+        <div className="grid w-full grid-cols-6 grid-rows-2 gap-2">
           {ZODIAC_SIGNS.map((s) => {
             const active = s.id === signId;
             return (
@@ -130,10 +130,10 @@ export function SignAndHoroscope() {
                 key={s.id}
                 type="button"
                 onClick={() => selectSign(s.id)}
-                className="flex flex-shrink-0 flex-col items-center gap-1"
+                className="flex flex-col items-center gap-1"
               >
                 <span
-                  className={`flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] text-[22px] text-[#1A1020] transition-all ${
+                  className={`flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] text-[20px] text-[#1A1020] transition-all ${
                     active
                       ? "border-gold bg-white shadow-[0_0_12px_rgba(200,169,110,0.35)]"
                       : "border-[#C8C0B4] bg-white"
@@ -142,7 +142,7 @@ export function SignAndHoroscope() {
                   {s.symbol}
                 </span>
                 <span
-                  className={`text-[10px] ${
+                  className={`text-[9px] ${
                     active ? "font-medium text-gold" : "text-[#6B6560]"
                   }`}
                 >
