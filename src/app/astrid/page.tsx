@@ -173,8 +173,8 @@ export default function AstridPage() {
   return (
     <div className="flex h-svh flex-col bg-chat-bg text-chat-ink">
       <div className="flex flex-shrink-0 items-center gap-3 bg-bg px-5 py-3">
-        <Link href="/inicio" className="text-[14px] text-[#888880]">
-          ← Inicio
+        <Link href="/" className="text-[14px] text-[#888880]">
+          ← AstroLife
         </Link>
         <div className="flex-1 text-center">
           <p className="font-display text-lg font-bold text-ink">Astrid</p>
