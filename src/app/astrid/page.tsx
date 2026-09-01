@@ -16,8 +16,6 @@ import { BIRTH_DATA_STORAGE_KEY } from "@/lib/astro/storage";
 import type { BirthFormData } from "@/components/carta/BirthDataForm";
 import { createClient } from "@/lib/supabase/client";
 
-const SUGGESTIONS = ["¿Y en el amor?", "Ver mis tránsitos", "¿Qué dice Venus?"];
-
 function nowLabel() {
   return new Date().toLocaleTimeString("es-CL", {
     hour: "2-digit",
@@ -206,20 +204,6 @@ export default function AstridPage() {
           )}
         </div>
         <div ref={bottomRef} />
-      </div>
-
-      <div className="flex flex-shrink-0 flex-wrap gap-2 px-4 pb-1">
-        {SUGGESTIONS.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => sendMessage(s)}
-            disabled={sending}
-            className="whitespace-nowrap rounded-full border border-[#E0D8F0] bg-white px-3.5 py-1.5 text-xs text-violet disabled:opacity-50"
-          >
-            {s}
-          </button>
-        ))}
       </div>
 
       <ChatInput onSend={sendMessage} disabled={sending} />
