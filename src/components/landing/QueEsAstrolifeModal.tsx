@@ -40,13 +40,28 @@ export function QueEsAstrolifeModal() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="mb-3 cursor-pointer text-center text-[11px] uppercase tracking-[0.12em] text-ink-muted underline-offset-2 hover:text-ink hover:underline"
-      >
-        ¿Qué es AstroLife?
-      </button>
+      <div className="my-6 flex justify-center">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="cursor-pointer rounded-full px-6 py-2.5 text-[15px] font-semibold transition-colors duration-150"
+          style={{
+            background: "transparent",
+            border: "1.5px solid #2A1F3D",
+            color: "#F0EDE8",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#C8A96E";
+            (e.currentTarget as HTMLButtonElement).style.color = "#C8A96E";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#2A1F3D";
+            (e.currentTarget as HTMLButtonElement).style.color = "#F0EDE8";
+          }}
+        >
+          ✨ ¿Qué es AstroLife?
+        </button>
+      </div>
 
       {open && (
         <div
