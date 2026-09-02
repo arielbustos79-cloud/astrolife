@@ -104,6 +104,7 @@ export default function PrivacidadPage() {
 
         <footer className="mt-10 border-t pt-6 text-[13px]" style={{ borderColor: "#2A1F3D", color: "#888880" }}>
           <p>LongViva SpA — Santiago, Chile</p>
+          <p className="mt-6 pb-8 text-center text-[12px]">© 2026 LongViva SpA</p>
         </footer>
       </div>
     </div>

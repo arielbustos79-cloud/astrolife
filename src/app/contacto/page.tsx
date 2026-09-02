@@ -77,6 +77,7 @@ export default function ContactoPage() {
           <Link href="/" className="hover:text-ink" style={{ color: "#C8A96E" }}>
             ← Volver a AstroLife
           </Link>
+          <p className="mt-6 pb-8 text-[12px]">© 2026 LongViva SpA</p>
         </div>
       </div>
     </div>
