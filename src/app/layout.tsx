@@ -16,9 +16,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AstroLife — Una guía entre tanto caos",
+  title: "AstroLife — Una guía entre nosotros",
   description:
-    "Horóscopo diario, carta natal y una guía astrológica conversacional. Astrid te acompaña entre tanto caos.",
+    "Horóscopo diario, carta natal y una guía astrológica conversacional. Astrid te acompaña entre nosotros.",
   manifest: "/manifest.json",
 };
 

@@ -1,7 +1,7 @@
 {
   "name": "AstroLife",
   "short_name": "AstroLife",
-  "description": "Una guía entre tanto caos.",
+  "description": "Una guía entre nosotros.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#100A1A",
