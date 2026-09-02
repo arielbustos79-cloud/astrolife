@@ -102,7 +102,7 @@ export default function LandingPage() {
           <span>·</span>
           <Link href="/privacidad" className="px-2 hover:text-ink">Privacidad</Link>
           <span>·</span>
-          <a href="mailto:hola@astrolife.cl" className="px-2 hover:text-ink">Contacto</a>
+          <Link href="/contacto" className="px-2 hover:text-ink">Contacto</Link>
         </div>
       </footer>
 
