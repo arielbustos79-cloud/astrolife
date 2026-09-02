@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LandingCta } from "@/components/landing/LandingCta";
+import { QueEsAstrolifeModal } from "@/components/landing/QueEsAstrolifeModal";
 
 const FEATURES = [
   {
@@ -54,11 +55,11 @@ export default function LandingPage() {
         </div>
 
         <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-violet/30 bg-violet/10 px-3 py-1 text-[11px] tracking-wide text-violet">
-          ✨ Astrología con inteligencia artificial
+          ✨ Astrología con IA
         </div>
 
         <h1 className="font-display mb-3 text-[2.6rem] font-bold leading-[1.15] text-ink">
-          Una guía entre<br />tanto caos.
+          Una guía entre<br />nosotros.
         </h1>
 
         <p className="mb-8 max-w-[280px] text-[14px] leading-relaxed text-ink-muted">
@@ -70,9 +71,7 @@ export default function LandingPage() {
 
       {/* Features */}
       <section className="px-4 pb-8">
-        <p className="mb-3 text-center text-[11px] uppercase tracking-[0.12em] text-ink-muted">
-          ¿Qué es AstroLife?
-        </p>
+        <QueEsAstrolifeModal />
         <div className="flex flex-col gap-2.5">
           {FEATURES.map((f) => (
             <Link

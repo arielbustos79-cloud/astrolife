@@ -11,6 +11,7 @@ const PLANET_COLOR: Record<string, string> = {
   "☿": "#A8D8A8",
   "♃": "#F0C080",
   "♆": "#80C8F0",
+  "⛢": "#80D8F0",
 };
 
 type Transit = {
@@ -21,44 +22,68 @@ type Transit = {
   status: "active" | string;
 };
 
-// Hardcoded transits for August 2026 — will be replaced with real
+// Hardcoded transits for September 2026 — will be replaced with real
 // astronomia calculations once the ephemeris layer for transits is built.
-const TRANSITS_AUG_2026: Transit[] = [
+const TRANSITS_SEP_2026: Transit[] = [
   {
     glyph: "☉",
-    name: "Sol en Leo",
-    description: "Temporada de creatividad, liderazgo y expresión personal.",
-    status: "active",
-  },
-  {
-    glyph: "♃",
-    name: "Júpiter en Leo",
-    description: "Expansión del ego y la confianza. Grandes gestos, grandes aprendizajes.",
+    name: "Sol en Virgo",
+    description: "Temporada de análisis, orden y perfeccionamiento. Ideal para revisar hábitos, salud y rutinas. La atención al detalle es tu mayor fortaleza este mes.",
     status: "active",
   },
   {
     glyph: "☿",
     name: "Mercurio en Virgo",
-    description: "Mente analítica en su domicilio. Ideal para organizar y comunicar con precisión.",
-    status: "13 ago",
-  },
-  {
-    glyph: "♀",
-    name: "Venus en Cáncer",
-    description: "El amor se vuelve doméstico y protector. Necesidad de pertenencia y cuidado.",
+    description: "Mente analítica en su máximo potencial. Excelente para contratos, estudios y comunicaciones precisas. Cuidado con el exceso de crítica hacia ti o los demás.",
     status: "active",
   },
   {
-    glyph: "♄",
-    name: "Saturno en Aries Rx",
-    description: "Revisión de los límites personales. Lecciones sobre la identidad y el coraje.",
+    glyph: "♀",
+    name: "Venus en Libra",
+    description: "Venus en su domicilio: armonía, belleza y diplomacia al centro. Las relaciones florecen cuando hay equilibrio y reciprocidad. Buen momento para resolver conflictos.",
     status: "active",
   },
   {
     glyph: "♂",
     name: "Marte en Géminis",
-    description: "Energía dispersa y verbal. Acción a través de las palabras y las ideas.",
-    status: "28 ago",
+    description: "Energía dispersa pero versátil. La acción viene a través de las palabras, ideas y conexiones. Múltiples proyectos activos; cuidado con la falta de foco.",
+    status: "active",
+  },
+  {
+    glyph: "♃",
+    name: "Júpiter en Géminis",
+    description: "Expansión a través del conocimiento y la comunicación. Oportunidades que llegan por conversaciones, cursos y redes. La curiosidad es tu camino al crecimiento.",
+    status: "active",
+  },
+  {
+    glyph: "♄",
+    name: "Saturno en Piscis Rx",
+    description: "Revisión profunda de límites emocionales y espirituales. Período de introspección y consolidación interior. Lo que no tiene base sólida se cuestiona.",
+    status: "active",
+  },
+  {
+    glyph: "⛢",
+    name: "Urano en Tauro",
+    description: "Revolución en lo material: finanzas, recursos y valores en transformación. Cambios inesperados que a la larga liberan. La estabilidad se reinventa.",
+    status: "active",
+  },
+  {
+    glyph: "♆",
+    name: "Neptuno en Piscis Rx",
+    description: "Intuición elevada pero también confusión posible. Cuidado con idealizaciones. Buen momento para arte, meditación y conexión espiritual.",
+    status: "active",
+  },
+  {
+    glyph: "☽",
+    name: "Luna llena en Piscis",
+    description: "Clímax emocional y espiritual. Momento de soltar lo que ya no sirve. Las emociones están a flor de piel — escúchalas sin dejarte arrastrar.",
+    status: "17 sep",
+  },
+  {
+    glyph: "☿",
+    name: "Mercurio entra en Libra",
+    description: "La mente se vuelve diplomática y busca el equilibrio en cada decisión. Conversaciones importantes sobre relaciones y justicia. Buen momento para negociar.",
+    status: "26 sep",
   },
 ];
 
@@ -83,14 +108,14 @@ export default function TransitosPage() {
       {/* Header */}
       <div className="px-5 pb-5 pt-2">
         <h1 className="font-display text-[26px] font-bold leading-tight text-ink">
-          Tránsitos del mes
+          Tránsitos de septiembre
         </h1>
         <p className="mt-1 text-sm text-ink-muted">{monthLabel}</p>
       </div>
 
       {/* Transit cards */}
       <div className="flex flex-col gap-3 px-4">
-        {TRANSITS_AUG_2026.map((t) => {
+        {TRANSITS_SEP_2026.map((t) => {
           const color = PLANET_COLOR[t.glyph] ?? "#C8A96E";
           const isActive = t.status === "active";
 

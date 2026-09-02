@@ -4,6 +4,7 @@ import { SignAndHoroscope } from "@/components/home/SignAndHoroscope";
 import { AstridCta } from "@/components/home/AstridCta";
 import { TransitList } from "@/components/home/TransitList";
 import { CartaPendienteSync } from "@/components/inicio/CartaPendienteSync";
+import { PwaBanner } from "@/components/ui/PwaBanner";
 import { MOON_PHASE_TODAY, MONTHLY_TRANSITS } from "@/lib/mock-content";
 
 const rawTodayLabel = new Intl.DateTimeFormat("es-CL", {
@@ -35,6 +36,7 @@ export default function InicioPage() {
       <AstridCta />
       <TransitList transits={MONTHLY_TRANSITS} />
 
+      <PwaBanner />
       <BottomNav />
     </div>
   );

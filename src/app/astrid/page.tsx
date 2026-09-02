@@ -23,33 +23,38 @@ function nowLabel() {
   });
 }
 
+function tsLabel(iso: string) {
+  return new Date(iso).toLocaleTimeString("es-CL", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 let nextId = 1;
 function newId() {
   return `msg-${nextId++}`;
 }
 
-const WELCOME_ID = "msg-welcome";
-
 export default function AstridPage() {
-  const [messages, setMessages] = useState<ChatBubbleMessage[]>(() => [
-    { id: WELCOME_ID, role: "astrid", text: "", time: "" },
-  ]);
+  const [messages, setMessages] = useState<ChatBubbleMessage[]>([]);
+  const [initialized, setInitialized] = useState(false);
   const [sending, setSending] = useState(false);
   const [chatStartedAt, setChatStartedAt] = useState("");
   const [natalChart, setNatalChart] = useState<NatalChart | null>(null);
   const [birthData, setBirthData] = useState<BirthFormData | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = nowLabel();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setChatStartedAt(t);
 
     const init = async () => {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
+      setUserId(session?.user.id ?? null);
 
-      // 1. Try localStorage
+      // 1. Load birth data: localStorage → Supabase fallback
       let parsedData: BirthFormData | null = null;
       const stored = window.localStorage.getItem(BIRTH_DATA_STORAGE_KEY);
       if (stored) {
@@ -60,7 +65,6 @@ export default function AstridPage() {
         }
       }
 
-      // 2. If no localStorage but has session → load from Supabase
       if (!parsedData && session) {
         const { data: carta } = await supabase
           .from("carta_natal")
@@ -82,51 +86,72 @@ export default function AstridPage() {
         }
       }
 
-      // 3. If still no birth data → show no-chart welcome
+      // 2. No birth data → no-chart welcome
       if (!parsedData) {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === WELCOME_ID
-              ? { ...m, time: t, text: ASTRID_WELCOME_MESSAGE_NO_CHART, cta: { label: "Ir a Carta Natal", href: "/carta-natal" } }
-              : m,
-          ),
-        );
+        setMessages([{
+          id: newId(),
+          role: "astrid",
+          text: ASTRID_WELCOME_MESSAGE_NO_CHART,
+          time: t,
+          cta: { label: "Ir a Carta Natal", href: "/carta-natal" },
+        }]);
+        setInitialized(true);
         return;
       }
 
-      // 4. Calculate chart from birth data
+      // 3. Start chart calculation in background
       setBirthData(parsedData);
       getNatalChart(parsedData)
         .then((chart) => setNatalChart(chart))
         .catch(() => { /* Astrid works without chart */ });
 
-      // 5. Check first-time vs returning
-      let esPrimeraVez = true;
+      // 4. Load chat history if session exists
       if (session) {
         const { data: historial } = await supabase
           .from("chat_astrid")
-          .select("id")
+          .select("id,role,content,created_at")
           .eq("user_id", session.user.id)
-          .limit(1)
-          .maybeSingle();
-        esPrimeraVez = !historial;
+          .order("created_at", { ascending: false })
+          .limit(10);
+
+        const ordered = (historial ?? []).reverse();
+
+        if (ordered.length > 0) {
+          // Has history → show history directly
+          const mapped: ChatBubbleMessage[] = ordered.map((h) => ({
+            id: `hist-${h.id as string}`,
+            role: (h.role as string) === "user" ? "user" : "astrid",
+            text: h.content as string,
+            time: tsLabel(h.created_at as string),
+          }));
+          setMessages(mapped);
+          setInitialized(true);
+          return;
+        }
       }
 
+      // 5. No history → personalized first-time welcome
       const name = parsedData.name?.trim() || null;
-      const welcomeText = esPrimeraVez ? welcomeFirstTime(name) : welcomeReturning(name);
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === WELCOME_ID ? { ...m, time: t, text: welcomeText } : m,
-        ),
-      );
+      const welcomeText = welcomeFirstTime(name);
+      setMessages([{ id: newId(), role: "astrid", text: welcomeText, time: t }]);
+      setInitialized(true);
     };
 
     void init();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
+
+  async function saveMessage(role: "user" | "assistant", content: string) {
+    if (!userId) return;
+    try {
+      await createClient()
+        .from("chat_astrid")
+        .insert({ user_id: userId, role, content });
+    } catch { /* non-critical, ignore */ }
+  }
 
   async function sendMessage(text: string) {
     const history: AstridChatMessage[] = [
@@ -137,8 +162,10 @@ export default function AstridPage() {
       { role: "user", content: text },
     ];
 
-    setMessages((prev) => [...prev, { id: newId(), role: "user", text, time: nowLabel() }]);
+    const userMsgId = newId();
+    setMessages((prev) => [...prev, { id: userMsgId, role: "user", text, time: nowLabel() }]);
     setSending(true);
+    void saveMessage("user", text);
 
     const astridMessageId = newId();
 
@@ -165,28 +192,32 @@ export default function AstridPage() {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
+      let fullText = "";
 
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
+        fullText += chunk;
         setMessages((prev) =>
           prev.map((m) =>
             m.id === astridMessageId ? { ...m, text: m.text + chunk } : m,
           ),
         );
       }
+
+      void saveMessage("assistant", fullText);
     } catch (error) {
-      const text =
+      const errText =
         error instanceof Error
           ? `Astrid no pudo responder ahora mismo. (${error.message})`
           : "Astrid no pudo responder ahora mismo.";
       setMessages((prev) => {
         const exists = prev.some((m) => m.id === astridMessageId);
         if (exists) {
-          return prev.map((m) => (m.id === astridMessageId ? { ...m, text } : m));
+          return prev.map((m) => (m.id === astridMessageId ? { ...m, text: errText } : m));
         }
-        return [...prev, { id: astridMessageId, role: "astrid", text, time: nowLabel() }];
+        return [...prev, { id: astridMessageId, role: "astrid", text: errText, time: nowLabel() }];
       });
     } finally {
       setSending(false);
@@ -217,18 +248,22 @@ export default function AstridPage() {
       <div className="flex-1 overflow-y-auto px-4 py-5">
         <p className="mb-3 text-center text-[11px] text-[#999]">Hoy · {chatStartedAt}</p>
         <div className="flex flex-col gap-3">
-          {messages.map((m) =>
-            m.role === "astrid" && m.text === "" && sending ? (
-              <TypingBubble key={m.id} />
-            ) : (
-              <ChatBubble key={m.id} message={m} />
-            ),
+          {!initialized ? (
+            <TypingBubble />
+          ) : (
+            messages.map((m) =>
+              m.role === "astrid" && m.text === "" && sending ? (
+                <TypingBubble key={m.id} />
+              ) : (
+                <ChatBubble key={m.id} message={m} />
+              ),
+            )
           )}
         </div>
         <div ref={bottomRef} />
       </div>
 
-      <ChatInput onSend={sendMessage} disabled={sending} />
+      <ChatInput onSend={sendMessage} disabled={sending || !initialized} />
     </div>
   );
 }
