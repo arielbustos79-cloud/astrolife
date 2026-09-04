@@ -55,6 +55,7 @@ export function SignAndHoroscope() {
   const [signId, setSignId] = useState(DEFAULT_SIGN);
   const [horoscope, setHoroscope] = useState<HoroscopeData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -136,6 +137,29 @@ export function SignAndHoroscope() {
     window.localStorage.setItem(STORAGE_KEY, id);
   }
 
+  async function handleShare() {
+    if (!horoscope) return;
+    const today = new Date().toLocaleDateString("es-CL", { day: "numeric", month: "long" });
+    const shareText = `${sign.symbol} Horóscopo de ${sign.name} · ${today}\n\n${horoscope.text}\n\nastrolife.cl`;
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: `Horóscopo de ${sign.name} — AstroLife`,
+          text: shareText,
+          url: "https://astrolife.cl",
+        });
+      } catch { /* cancelled by user */ }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* ignore */ }
+  }
+
   const sign = getZodiacSign(signId);
 
   return (
@@ -214,15 +238,40 @@ export function SignAndHoroscope() {
             <p className="mb-4 text-sm leading-[1.7] text-[#2A2020]">
               {horoscope?.text}
             </p>
-            <div className="flex flex-wrap gap-2">
-              {horoscope?.chips.map((chip) => (
-                <span
-                  key={chip}
-                  className="rounded-full border border-[#00000018] bg-[#F3EFE8] px-2.5 py-1 text-[11px] text-[#2A2020]/75"
-                >
-                  {chip}
-                </span>
-              ))}
+            <div className="flex items-end justify-between gap-2">
+              <div className="flex flex-wrap gap-2">
+                {horoscope?.chips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="rounded-full border border-[#00000018] bg-[#F3EFE8] px-2.5 py-1 text-[11px] text-[#2A2020]/75"
+                  >
+                    {chip}
+                  </span>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-colors"
+                style={
+                  copied
+                    ? { borderColor: "#4CAF50", color: "#4CAF50", background: "rgba(76,175,80,0.08)" }
+                    : { borderColor: "#C8A96E50", color: "#9C7F4F", background: "transparent" }
+                }
+              >
+                {copied ? (
+                  "✓ Copiado"
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                      <polyline points="16 6 12 2 8 6"/>
+                      <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                    Compartir
+                  </>
+                )}
+              </button>
             </div>
           </>
         )}
