@@ -7,6 +7,9 @@ import { CartaPendienteSync } from "@/components/inicio/CartaPendienteSync";
 import { PwaBanner } from "@/components/ui/PwaBanner";
 import { MOON_PHASE_TODAY, MONTHLY_TRANSITS } from "@/lib/mock-content";
 
+// Force SSR so new Date() evaluates per-request, not at build time
+export const dynamic = "force-dynamic";
+
 const rawTodayLabel = new Intl.DateTimeFormat("es-CL", {
   weekday: "long",
   day: "numeric",
