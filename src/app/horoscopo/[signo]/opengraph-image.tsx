@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { getZodiacSign } from "@/lib/zodiac";
 import { generarHoroscopo } from "@/lib/horoscopo-servidor";
 
-export const runtime = "edge";
 export const revalidate = 86400;
 
 export default async function OGImage({
