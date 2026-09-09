@@ -139,22 +139,23 @@ export function SignAndHoroscope() {
 
   async function handleShare() {
     if (!horoscope) return;
+    const url = `https://astrolife.cl/horoscopo/${signId}`;
     const today = new Date().toLocaleDateString("es-CL", { day: "numeric", month: "long" });
-    const shareText = `${sign.symbol} Horóscopo de ${sign.name} · ${today}\n\n${horoscope.text}\n\nastrolife.cl`;
+    const shareText = `${sign.symbol} Horóscopo de ${sign.name} · ${today}\n\n${horoscope.text.slice(0, 200)}...`;
 
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
           title: `Horóscopo de ${sign.name} — AstroLife`,
           text: shareText,
-          url: "https://astrolife.cl",
+          url,
         });
       } catch { /* cancelled by user */ }
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(shareText);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* ignore */ }
@@ -260,7 +261,7 @@ export function SignAndHoroscope() {
                 }
               >
                 {copied ? (
-                  "✓ Copiado"
+                  "✓ Enlace copiado"
                 ) : (
                   <>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

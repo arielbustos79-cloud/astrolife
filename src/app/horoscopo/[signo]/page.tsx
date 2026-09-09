@@ -47,6 +47,11 @@ export async function generateMetadata({
     alternates: {
       canonical: `https://astrolife.cl/horoscopo/${signo}`,
     },
+    twitter: {
+      card: "summary_large_image",
+      title: `Horóscopo ${sign.name} hoy — AstroLife`,
+      description: `Horóscopo de ${sign.name} para hoy, ${fecha}. Generado por inteligencia artificial en AstroLife.cl`,
+    },
   };
 }
 
