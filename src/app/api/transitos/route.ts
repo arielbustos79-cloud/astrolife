@@ -1,36 +1,67 @@
 import { NextResponse } from "next/server";
-import { calcularTransitos } from "@/lib/transitos-reales";
-import { generarDescripcionTransito } from "@/lib/transitos-descripcion";
-import type { TransitoReal } from "@/lib/transitos-reales";
+import { createClient } from "@/lib/supabase/server";
+import { calcularTransitos, calcularTransitosPersonales } from "@/lib/transitos-reales";
+import { generarDescripcionTransito, generarDescripcionPersonal } from "@/lib/transitos-descripcion";
+import type { TransitoReal, TransitoPersonal } from "@/lib/transitos-reales";
 
-// Caché en memoria: sobrevive reinicios cálidos del servidor en Vercel
-let cache: { data: TransitoReal[]; fecha: string } | null = null;
+// Caché de tránsitos generales (sobrevive reinicios cálidos en Vercel)
+let cacheGenerales: { data: TransitoReal[]; fecha: string } | null = null;
 
 function fechaHoyKey() {
-  return new Date().toISOString().slice(0, 10); // "2026-09-08"
+  return new Date().toISOString().slice(0, 10);
+}
+
+async function getTransitosGenerales(): Promise<TransitoReal[]> {
+  const hoy = fechaHoyKey();
+  if (cacheGenerales && cacheGenerales.fecha === hoy) return cacheGenerales.data;
+
+  const transitosBase = calcularTransitos(new Date());
+  const transitosCompletos = await Promise.all(
+    transitosBase.map(async (t) => ({
+      ...t,
+      descripcion: await generarDescripcionTransito(t.transito),
+    }))
+  );
+
+  cacheGenerales = { data: transitosCompletos, fecha: hoy };
+  return transitosCompletos;
 }
 
 export async function GET() {
-  const hoy = fechaHoyKey();
-
-  if (cache && cache.fecha === hoy) {
-    return NextResponse.json(cache.data);
-  }
-
   try {
-    const transitosBase = calcularTransitos(new Date());
+    const generales = await getTransitosGenerales();
 
-    // Generar descripciones en paralelo (8 llamadas simultáneas)
-    const transitosCompletos = await Promise.all(
-      transitosBase.map(async (t) => ({
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      return NextResponse.json({ generales, personales: [], tieneCartaNatal: false });
+    }
+
+    const { data: carta } = await supabase
+      .from("carta_natal")
+      .select("planetas")
+      .eq("user_id", session.user.id)
+      .maybeSingle();
+
+    if (!carta?.planetas) {
+      return NextResponse.json({ generales, personales: [], tieneCartaNatal: false });
+    }
+
+    const transitosSinDesc = calcularTransitosPersonales(generales, carta.planetas);
+
+    const personales: TransitoPersonal[] = await Promise.all(
+      transitosSinDesc.map(async (t) => ({
         ...t,
-        descripcion: await generarDescripcionTransito(t.transito),
+        descripcion: await generarDescripcionPersonal(
+          t.transito.planeta,
+          t.aspecto,
+          t.planetaNatal
+        ),
       }))
     );
 
-    cache = { data: transitosCompletos, fecha: hoy };
-
-    return NextResponse.json(transitosCompletos);
+    return NextResponse.json({ generales, personales, tieneCartaNatal: personales.length > 0 });
   } catch (error) {
     console.error("Error calculando tránsitos:", error);
     return NextResponse.json({ error: "Error calculando tránsitos" }, { status: 500 });

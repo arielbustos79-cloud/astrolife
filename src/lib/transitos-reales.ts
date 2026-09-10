@@ -70,6 +70,74 @@ function makeTransito(nombre: string, lonDeg: number): TransitoReal {
   };
 }
 
+const SIGNOS_ORDEN = [
+  "Aries", "Tauro", "Géminis", "Cáncer", "Leo", "Virgo",
+  "Libra", "Escorpio", "Sagitario", "Capricornio", "Acuario", "Piscis",
+];
+
+const ASPECTOS = [
+  { nombre: "Conjunción", angulo: 0,   simbolo: "☌", orbe: 3 },
+  { nombre: "Sextil",     angulo: 60,  simbolo: "⚹", orbe: 3 },
+  { nombre: "Cuadratura", angulo: 90,  simbolo: "□", orbe: 3 },
+  { nombre: "Trígono",    angulo: 120, simbolo: "△", orbe: 3 },
+  { nombre: "Oposición",  angulo: 180, simbolo: "☍", orbe: 3 },
+];
+
+export type TransitoPersonal = {
+  transito: TransitoReal;
+  planetaNatal: string;
+  aspecto: string;
+  simboloAspecto: string;
+  diferencia: number;
+  intensidad: "alta" | "media";
+  descripcion: string;
+};
+
+function transitoALongitud(transito: TransitoReal): number {
+  const idx = SIGNOS_ORDEN.findIndex(
+    (s) => s.toLowerCase() === transito.signo.toLowerCase()
+  );
+  return (idx >= 0 ? idx * 30 : 0) + transito.grado;
+}
+
+function diferenciaAngular(lon1: number, lon2: number): number {
+  return Math.abs(((lon1 - lon2 + 180) % 360) - 180);
+}
+
+function detectarAspecto(diff: number) {
+  for (const asp of ASPECTOS) {
+    if (Math.abs(diff - asp.angulo) <= asp.orbe) return asp;
+  }
+  return null;
+}
+
+export function calcularTransitosPersonales(
+  transitosActuales: TransitoReal[],
+  planetasNatales: Record<string, { longitude: number }>
+): Omit<TransitoPersonal, "descripcion">[] {
+  const resultado: Omit<TransitoPersonal, "descripcion">[] = [];
+
+  for (const transito of transitosActuales) {
+    const transitoLon = transitoALongitud(transito);
+    for (const [clave, datos] of Object.entries(planetasNatales)) {
+      const diff = diferenciaAngular(transitoLon, datos.longitude);
+      const asp = detectarAspecto(diff);
+      if (asp) {
+        resultado.push({
+          transito,
+          planetaNatal: clave.charAt(0).toUpperCase() + clave.slice(1),
+          aspecto: asp.nombre,
+          simboloAspecto: asp.simbolo,
+          diferencia: Math.round(diff * 10) / 10,
+          intensidad: asp.angulo === 0 || asp.angulo === 180 ? "alta" : "media",
+        });
+      }
+    }
+  }
+
+  return resultado.sort((a, b) => (a.intensidad === "alta" ? -1 : 1));
+}
+
 export function calcularTransitos(fecha: Date = new Date()): TransitoReal[] {
   const jd = CalendarGregorianToJD(
     fecha.getUTCFullYear(),
