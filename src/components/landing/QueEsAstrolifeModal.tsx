@@ -29,9 +29,9 @@ const STEPS = [
   },
   {
     emoji: "🪐",
-    title: "Tránsitos del mes",
+    title: "Tránsitos personalizados",
     description:
-      "Qué planetas te afectan este mes y cómo prepararte para lo que viene.",
+      "Con tu carta natal, descubre qué planetas te afectan a ti hoy. Astrid los interpreta.",
   },
 ];
 
