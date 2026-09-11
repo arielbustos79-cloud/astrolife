@@ -39,6 +39,7 @@ export default function AstridPage() {
   const [messages, setMessages] = useState<ChatBubbleMessage[]>([]);
   const [initialized, setInitialized] = useState(false);
   const [sending, setSending] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [chatStartedAt, setChatStartedAt] = useState("");
   const [natalChart, setNatalChart] = useState<NatalChart | null>(null);
   const [birthData, setBirthData] = useState<BirthFormData | null>(null);
@@ -137,8 +138,23 @@ export default function AstridPage() {
       setInitialized(true);
     };
 
-    void init();
+    void init().then(() => {
+      try {
+        const pending = localStorage.getItem("astrolife:mensaje-pendiente");
+        if (pending) {
+          localStorage.removeItem("astrolife:mensaje-pendiente");
+          setPendingMessage(pending);
+        }
+      } catch { /* ignorar si localStorage no está disponible */ }
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!initialized || !pendingMessage || sending) return;
+    const msg = pendingMessage;
+    setPendingMessage(null);
+    void sendMessage(msg);
+  }, [initialized, pendingMessage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { NavHeader } from "@/components/ui/NavHeader";
 import { BottomNav } from "@/components/ui/BottomNav";
 import type { TransitoReal, TransitoPersonal } from "@/lib/transitos-reales";
@@ -136,9 +137,21 @@ function CTACartaNatal() {
 }
 
 export default function TransitosPage() {
+  const router = useRouter();
   const [data, setData] = useState<TransitosResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  function handleAstridClick(personales: TransitoPersonal[]) {
+    const lineas = personales
+      .map((t) => `• ${t.transito.planeta} ${t.simboloAspecto} mi ${t.planetaNatal} natal (${t.aspecto})`)
+      .join("\n");
+    const mensaje = `Astrid, interpreta mis tránsitos personales activos de este momento:\n\n${lineas}\n\n¿Qué me dice este momento astrológico?`;
+    try {
+      localStorage.setItem("astrolife:mensaje-pendiente", mensaje);
+    } catch { /* ignorar si localStorage no está disponible */ }
+    router.push("/astrid");
+  }
 
   useEffect(() => {
     fetch("/api/transitos")
@@ -189,6 +202,17 @@ export default function TransitosPage() {
                     <CardPersonal key={`${t.transito.planeta}-${t.planetaNatal}-${i}`} t={t} />
                   ))}
                 </div>
+                <button
+                  onClick={() => handleAstridClick(data.personales)}
+                  className="mt-4 w-full cursor-pointer rounded-full px-6 py-3.5 text-[14px] font-semibold"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(123,111,160,0.3), rgba(200,169,110,0.2))",
+                    border: "1px solid rgba(123,111,160,0.4)",
+                    color: "#F0EDE8",
+                  }}
+                >
+                  ✨ Que Astrid interprete mis tránsitos
+                </button>
               </section>
             )}
 
