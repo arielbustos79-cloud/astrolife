@@ -60,7 +60,7 @@ export default async function OGImage({
         {/* Nombre */}
         <div
           style={{
-            fontSize: "52px",
+            fontSize: "54px",
             fontWeight: "700",
             color: "#C8A96E",
             marginBottom: "8px",
@@ -94,7 +94,7 @@ export default async function OGImage({
         {textoCorto ? (
           <div
             style={{
-              fontSize: "21px",
+              fontSize: "26px",
               color: "#F0EDE8",
               textAlign: "center",
               lineHeight: "1.65",
