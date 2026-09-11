@@ -2,10 +2,9 @@ import { NavHeader } from "@/components/ui/NavHeader";
 import { BottomNav } from "@/components/ui/BottomNav";
 import { SignAndHoroscope } from "@/components/home/SignAndHoroscope";
 import { AstridCta } from "@/components/home/AstridCta";
-import { TransitList } from "@/components/home/TransitList";
 import { CartaPendienteSync } from "@/components/inicio/CartaPendienteSync";
 import { PwaBanner } from "@/components/ui/PwaBanner";
-import { MOON_PHASE_TODAY, MONTHLY_TRANSITS } from "@/lib/mock-content";
+import { MOON_PHASE_TODAY } from "@/lib/mock-content";
 
 // Force SSR so new Date() evaluates per-request, not at build time
 export const dynamic = "force-dynamic";
@@ -37,7 +36,6 @@ export default function InicioPage() {
 
       <SignAndHoroscope />
       <AstridCta />
-      <TransitList transits={MONTHLY_TRANSITS} />
 
       <PwaBanner />
       <BottomNav />
