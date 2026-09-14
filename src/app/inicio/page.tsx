@@ -9,13 +9,10 @@ import { PwaBanner } from "@/components/ui/PwaBanner";
 // Force SSR so new Date() evaluates per-request, not at build time
 export const dynamic = "force-dynamic";
 
-const rawTodayLabel = new Intl.DateTimeFormat("es-CL", {
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-}).format(new Date());
-const TODAY_LABEL =
-  rawTodayLabel.charAt(0).toUpperCase() + rawTodayLabel.slice(1);
+const _fecha = new Date();
+const _weekday = _fecha.toLocaleDateString("es-CL", { weekday: "long" });
+const _month = _fecha.toLocaleDateString("es-CL", { month: "long" });
+const TODAY_LABEL = `${_weekday.charAt(0).toUpperCase() + _weekday.slice(1)}, ${_fecha.getDate()} de ${_month.charAt(0).toUpperCase() + _month.slice(1)}`;
 
 export default function InicioPage() {
   return (
