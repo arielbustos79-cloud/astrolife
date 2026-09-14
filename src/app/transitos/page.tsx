@@ -24,7 +24,7 @@ function mesActual() {
 }
 
 function mesNombre() {
-  return new Date().toLocaleDateString("es-CL", { month: "long" });
+  return capitalize(new Date().toLocaleDateString("es-CL", { month: "long" }));
 }
 
 function SkeletonCard() {
