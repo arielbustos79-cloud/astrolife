@@ -31,7 +31,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { signo } = await params;
   const sign = getZodiacSign(signo);
-  const fecha = fechaHoy();
+  const fecha = capitalize(fechaHoy());
 
   return {
     title: `Horóscopo de ${sign.name} hoy — AstroLife.cl`,

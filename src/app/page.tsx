@@ -64,12 +64,16 @@ export default function LandingPage() {
           ✨ Astrología con IA
         </div>
 
-        <h1 className="font-display mb-3 text-[2.6rem] font-bold leading-[1.15] text-ink">
-          AstroLife, una guía entre<br />nosotros.
+        <h1 className="font-display mb-3 text-center text-ink">
+          <span className="block text-[3.4rem] font-bold leading-none">AstroLife</span>
+          <span className="mt-1 block text-[2.6rem] font-bold leading-[1.15]">Una guía entre nosotros.</span>
         </h1>
 
-        <p className="mb-8 max-w-[280px] text-[14px] leading-relaxed text-ink-muted">
-          Astrología real. Personalizada por IA. En español.
+        <p className="max-w-[280px] text-[14px] leading-relaxed text-ink-muted">
+          Astrología real. Personalizada por IA.
+        </p>
+        <p className="mb-8 max-w-[280px] text-[14px] leading-relaxed text-ink-muted" style={{ marginTop: "8px" }}>
+          En español.
         </p>
 
         <LandingCta />
