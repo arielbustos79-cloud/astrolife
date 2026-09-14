@@ -16,10 +16,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AstroLife — Una guía entre nosotros",
+  title: "AstroLife — AstroLife, una guía entre nosotros",
   description:
     "Horóscopo diario, carta natal y una guía astrológica conversacional. Astrid te acompaña entre nosotros.",
   manifest: "/manifest.json",
+  openGraph: {
+    title: "AstroLife, una guía entre nosotros",
+  },
 };
 
 export const viewport: Viewport = {

@@ -21,6 +21,12 @@ const FEATURES = [
     description: "Tu guía astrológica personal disponible 24/7.",
     href: "/astrid",
   },
+  {
+    icon: "🪐",
+    title: "Tránsitos planetarios",
+    description: "Qué planetas te afectan este mes, personalizados según tu carta natal.",
+    href: "/transitos",
+  },
 ];
 
 export default function LandingPage() {
@@ -59,7 +65,7 @@ export default function LandingPage() {
         </div>
 
         <h1 className="font-display mb-3 text-[2.6rem] font-bold leading-[1.15] text-ink">
-          Una guía entre<br />nosotros.
+          AstroLife, una guía entre<br />nosotros.
         </h1>
 
         <p className="mb-8 max-w-[280px] text-[14px] leading-relaxed text-ink-muted">
