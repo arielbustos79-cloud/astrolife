@@ -3,8 +3,8 @@ import { BottomNav } from "@/components/ui/BottomNav";
 import { SignAndHoroscope } from "@/components/home/SignAndHoroscope";
 import { AstridCta } from "@/components/home/AstridCta";
 import { CartaPendienteSync } from "@/components/inicio/CartaPendienteSync";
+import { LunaChip } from "@/components/inicio/LunaChip";
 import { PwaBanner } from "@/components/ui/PwaBanner";
-import { MOON_PHASE_TODAY } from "@/lib/mock-content";
 
 // Force SSR so new Date() evaluates per-request, not at build time
 export const dynamic = "force-dynamic";
@@ -28,10 +28,7 @@ export default function InicioPage() {
         <p className="font-display mb-4 text-2xl font-semibold text-[#1A1020]">
           {TODAY_LABEL}
         </p>
-        <span className="inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-gold-dim/50 bg-gold-dim/15 px-3 py-1.5 text-xs font-medium text-[#6B4F20]">
-          <span style={{ color: "initial" }}>🌙</span>
-          {MOON_PHASE_TODAY}
-        </span>
+        <LunaChip />
       </div>
 
       <SignAndHoroscope />
