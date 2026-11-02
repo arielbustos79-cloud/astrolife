@@ -1,0 +1,29 @@
+# AstroLife
+
+> AstroLife es una plataforma gratuita de astrología occidental en español. Calcula la carta natal a partir de la fecha, hora y lugar de nacimiento, publica un horóscopo diario por signo y ofrece a Astrid, una guía astrológica conversacional con inteligencia artificial. Es un producto de LongViva SpA (Chile).
+
+## Qué ofrece
+- Carta natal: rueda natal con posiciones de planetas, casas y ascendente, calculada con fecha, hora y lugar de nacimiento.
+- Horóscopo diario por signo: texto generado con inteligencia artificial y actualizado cada día, para los 12 signos.
+- Tránsitos planetarios: posiciones actuales de los planetas y, con una carta natal guardada, los tránsitos que afectan a cada usuario.
+- Astrid: asistente conversacional con IA que conoce la carta natal guardada del usuario.
+
+## A quién está dirigido
+Personas hispanohablantes, principalmente en Chile y Latinoamérica.
+
+## Precio y registro
+Gratuito. Para guardar la carta natal se usa el correo electrónico, con un enlace de acceso y sin contraseña.
+
+## Aviso
+Contenido informativo y de entretenimiento. No constituye asesoría médica, psicológica, financiera ni legal.
+
+## Contacto
+Correo: hola@astrolife.cl
+
+## Páginas principales
+- Carta natal: https://astrolife.cl/carta-natal
+- Tránsitos: https://astrolife.cl/transitos
+- Horóscopo por signo (12 signos, misma estructura): https://astrolife.cl/horoscopo/leo
+- Términos: https://astrolife.cl/terminos
+- Privacidad: https://astrolife.cl/privacidad
+- Contacto: https://astrolife.cl/contacto

@@ -113,7 +113,7 @@ export default async function HoroscopoSignoPage({
           {sign.symbol}
         </div>
         <h1 className="font-display mb-1 text-[2rem] font-bold" style={{ color: "#F0EDE8" }}>
-          {sign.name}
+          Horóscopo de {sign.name} hoy
         </h1>
         <p className="mb-3 text-[13px]" style={{ color: "#888880" }}>
           {sign.dateRange}

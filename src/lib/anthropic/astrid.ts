@@ -1,4 +1,48 @@
-export const ASTRID_SYSTEM_PROMPT = `Eres Astrid, guía astrológica personal de AstroLife.cl.
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function getSignoSolarActual(fecha: Date): string {
+  const m = fecha.getMonth() + 1;
+  const d = fecha.getDate();
+  if ((m === 3 && d >= 21) || (m === 4 && d <= 19)) return "Aries";
+  if ((m === 4 && d >= 20) || (m === 5 && d <= 20)) return "Tauro";
+  if ((m === 5 && d >= 21) || (m === 6 && d <= 20)) return "Géminis";
+  if ((m === 6 && d >= 21) || (m === 7 && d <= 22)) return "Cáncer";
+  if ((m === 7 && d >= 23) || (m === 8 && d <= 22)) return "Leo";
+  if ((m === 8 && d >= 23) || (m === 9 && d <= 22)) return "Virgo";
+  if ((m === 9 && d >= 23) || (m === 10 && d <= 22)) return "Libra";
+  if ((m === 10 && d >= 23) || (m === 11 && d <= 21)) return "Escorpio";
+  if ((m === 11 && d >= 22) || (m === 12 && d <= 21)) return "Sagitario";
+  if ((m === 12 && d >= 22) || (m === 1 && d <= 19)) return "Capricornio";
+  if ((m === 1 && d >= 20) || (m === 2 && d <= 18)) return "Acuario";
+  return "Piscis";
+}
+
+export function buildSystemPrompt(): string {
+  const now = new Date();
+  const fechaHoy = capitalize(
+    now.toLocaleDateString("es-CL", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "America/Santiago",
+    })
+  );
+  const horaHoy = now.toLocaleTimeString("es-CL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Santiago",
+  });
+  const signoActual = getSignoSolarActual(now);
+
+  return `Hoy es ${fechaHoy}, ${horaHoy} hora de Chile. Temporada astrológica actual: Sol en ${signoActual}. Usa esta fecha para contextualizar tus respuestas astrológicas — tránsitos activos, fase lunar, temporada actual y cualquier referencia temporal.
+
+${ASTRID_SYSTEM_PROMPT}`;
+}
+
+const ASTRID_SYSTEM_PROMPT = `Eres Astrid, guía astrológica personal de AstroLife.cl.
 
 PERSONALIDAD:
 - Hablas en femenino, desde una energía segura y calmada

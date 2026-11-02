@@ -16,12 +16,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AstroLife — AstroLife, una guía entre nosotros",
+  metadataBase: new URL("https://astrolife.cl"),
+  title: "AstroLife — Horóscopo diario y carta natal con IA",
   description:
-    "Horóscopo diario, carta natal y una guía astrológica conversacional. Astrid te acompaña entre nosotros.",
+    "Carta natal gratis, horóscopo diario por signo y Astrid, una guía astrológica con IA en español. Calcula tu carta con tu fecha, hora y lugar.",
   manifest: "/manifest.json",
   openGraph: {
-    title: "AstroLife, una guía entre nosotros",
+    siteName: "AstroLife",
+    locale: "es_CL",
   },
 };
 

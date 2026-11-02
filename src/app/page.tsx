@@ -1,6 +1,34 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { ZODIAC_SIGNS } from "@/lib/zodiac";
 import { LandingCta } from "@/components/landing/LandingCta";
 import { QueEsAstrolifeModal } from "@/components/landing/QueEsAstrolifeModal";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "AstroLife — Horóscopo diario y carta natal con IA",
+  },
+  description:
+    "Carta natal gratis, horóscopo diario por signo y Astrid, una guía astrológica con IA en español. Calcula tu carta con tu fecha, hora y lugar.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "AstroLife — Horóscopo diario y carta natal con IA",
+    description:
+      "Carta natal gratis, horóscopo diario por signo y Astrid, una guía astrológica con IA en español. Calcula tu carta con tu fecha, hora y lugar.",
+    url: "https://astrolife.cl",
+    siteName: "AstroLife",
+    locale: "es_CL",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AstroLife — Horóscopo diario y carta natal con IA",
+    description:
+      "Carta natal gratis, horóscopo diario por signo y Astrid, una guía astrológica con IA en español.",
+  },
+};
 
 const FEATURES = [
   {
@@ -29,9 +57,45 @@ const FEATURES = [
   },
 ];
 
+const jsonLdOrganization = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "AstroLife",
+  url: "https://astrolife.cl",
+  logo: "https://astrolife.cl/icons/icon-192.png",
+  sameAs: [
+    "https://www.instagram.com/astrolife.cl/",
+    "https://www.facebook.com/profile.php?id=61594408834625",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "hola@astrolife.cl",
+    contactType: "customer support",
+    availableLanguage: "Spanish",
+  },
+};
+
+const jsonLdWebSite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  url: "https://astrolife.cl",
+  name: "AstroLife",
+  description:
+    "Astrología occidental en español con IA. Carta natal, horóscopo diario y Astrid, tu guía astrológica.",
+  inLanguage: "es",
+};
+
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-bg text-ink">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebSite) }}
+      />
 
       {/* Header */}
       <header className="flex items-center px-5 py-4">
@@ -104,9 +168,39 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Horóscopo por signo */}
+      <section className="px-4 pb-8">
+        <h2 className="mb-4 px-1 text-[13px] font-semibold uppercase tracking-wider text-ink-muted">
+          Horóscopo de hoy por signo
+        </h2>
+        <div className="grid grid-cols-4 gap-2">
+          {ZODIAC_SIGNS.map((s) => (
+            <Link
+              key={s.id}
+              href={`/horoscopo/${s.id}`}
+              className="flex flex-col items-center gap-1 rounded-[12px] border border-line bg-surface px-2 py-3 text-center transition-colors duration-150 hover:border-gold"
+            >
+              <span className="text-2xl">{s.symbol}</span>
+              <span className="text-[10px] text-ink-muted">{s.name}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-line px-5 py-5">
         <p className="mb-2.5 text-center text-[11px] text-ink-muted">© 2026 LongViva SpA</p>
+        <div className="mb-3 flex flex-wrap justify-center gap-x-1 gap-y-1">
+          {ZODIAC_SIGNS.map((s) => (
+            <Link
+              key={s.id}
+              href={`/horoscopo/${s.id}`}
+              className="px-1.5 text-[10px] text-ink-muted hover:text-ink"
+            >
+              {s.symbol} {s.name}
+            </Link>
+          ))}
+        </div>
         <div className="flex items-center justify-center gap-1 text-[11px] text-ink-muted">
           <Link href="/terminos" className="px-2 hover:text-ink">Términos</Link>
           <span>·</span>

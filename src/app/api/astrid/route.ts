@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import {
   ASTRID_MODEL,
-  ASTRID_SYSTEM_PROMPT,
+  buildSystemPrompt,
   type AstridChatMessage,
 } from "@/lib/anthropic/astrid";
 
@@ -27,7 +27,8 @@ export async function POST(request: Request) {
   }
 
   // DEBUG: verify system prompt and context are correct
-  console.log("[astrid/route] system prompt (first 200 chars):", ASTRID_SYSTEM_PROMPT.slice(0, 200));
+  const systemPrompt = buildSystemPrompt();
+  console.log("[astrid/route] system prompt (first 200 chars):", systemPrompt.slice(0, 200));
   console.log("[astrid/route] birthData received:", JSON.stringify(body.birthData ?? null));
   console.log("[astrid/route] natalChart received:", body.natalChart ? "yes (keys: " + Object.keys(body.natalChart as object).join(", ") + ")" : "none");
 
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
         const claudeStream = client.messages.stream({
           model: ASTRID_MODEL,
           max_tokens: 1024,
-          system: ASTRID_SYSTEM_PROMPT,
+          system: systemPrompt,
           messages: messagesWithContext,
         });
 
