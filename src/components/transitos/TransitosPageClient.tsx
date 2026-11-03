@@ -13,6 +13,10 @@ type TransitosResponse = {
   tieneCartaNatal: boolean;
 };
 
+type Props = {
+  generalesSSR: TransitoReal[];
+};
+
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -136,7 +140,7 @@ function CTACartaNatal() {
   );
 }
 
-export function TransitosPageClient() {
+export function TransitosPageClient({ generalesSSR }: Props) {
   const router = useRouter();
   const [data, setData] = useState<TransitosResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -181,11 +185,17 @@ export function TransitosPageClient() {
       </div>
 
       <div className="flex flex-col gap-3 px-4">
-        {loading && Array.from({ length: 7 }).map((_, i) => <SkeletonCard key={i} />)}
+        {/* Tránsitos personales: skeleton mientras carga, resultado cuando llega */}
+        {loading && (
+          <div className="flex flex-col gap-3">
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        )}
 
         {error && (
-          <p className="py-8 text-center text-sm text-ink-muted">
-            No se pudieron cargar los tránsitos. Intenta de nuevo en unos momentos.
+          <p className="py-4 text-center text-sm text-ink-muted">
+            No se pudieron cargar los tránsitos personales.
           </p>
         )}
 
@@ -222,12 +232,13 @@ export function TransitosPageClient() {
                 Tránsitos del mes
               </h2>
             )}
-
-            {data.generales.map((t) => (
-              <CardGeneral key={t.planeta} t={t} />
-            ))}
           </>
         )}
+
+        {/* Tránsitos generales: SSR-visible desde el primer render */}
+        {generalesSSR.map((t) => (
+          <CardGeneral key={t.planeta} t={t} />
+        ))}
       </div>
 
       <BottomNav />

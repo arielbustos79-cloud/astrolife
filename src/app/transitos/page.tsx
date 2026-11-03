@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TransitosPageClient } from "@/components/transitos/TransitosPageClient";
+import { getTransitosGenerales } from "@/lib/transitos-cache";
 
 export async function generateMetadata(): Promise<Metadata> {
   const mes = new Date().toLocaleDateString("es-CL", {
@@ -30,6 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function TransitosPage() {
-  return <TransitosPageClient />;
+export default async function TransitosPage() {
+  const generalesSSR = await getTransitosGenerales();
+  return <TransitosPageClient generalesSSR={generalesSSR} />;
 }

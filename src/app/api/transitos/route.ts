@@ -1,31 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { calcularTransitos, calcularTransitosPersonales } from "@/lib/transitos-reales";
-import { generarDescripcionTransito, generarDescripcionPersonal } from "@/lib/transitos-descripcion";
-import type { TransitoReal, TransitoPersonal } from "@/lib/transitos-reales";
-
-// Caché de tránsitos generales (sobrevive reinicios cálidos en Vercel)
-let cacheGenerales: { data: TransitoReal[]; fecha: string } | null = null;
-
-function fechaHoyKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-async function getTransitosGenerales(): Promise<TransitoReal[]> {
-  const hoy = fechaHoyKey();
-  if (cacheGenerales && cacheGenerales.fecha === hoy) return cacheGenerales.data;
-
-  const transitosBase = calcularTransitos(new Date());
-  const transitosCompletos = await Promise.all(
-    transitosBase.map(async (t) => ({
-      ...t,
-      descripcion: await generarDescripcionTransito(t.transito),
-    }))
-  );
-
-  cacheGenerales = { data: transitosCompletos, fecha: hoy };
-  return transitosCompletos;
-}
+import { calcularTransitosPersonales } from "@/lib/transitos-reales";
+import { generarDescripcionPersonal } from "@/lib/transitos-descripcion";
+import type { TransitoPersonal } from "@/lib/transitos-reales";
+import { getTransitosGenerales } from "@/lib/transitos-cache";
 
 export async function GET() {
   try {
