@@ -36,7 +36,7 @@ Responde SOLO con JSON, sin markdown ni explicaciones:
 
 El texto debe ser específico para hoy, no genérico. Máximo 3 oraciones.
 
-Tono: español latinoamericano natural y elegante. Cercano pero con clase — como una persona culta hablando con un amigo. NUNCA uses modismos, contracciones informales como 'pa', 'po', 've', ni jerga. El tono es cálido, directo y sofisticado.`,
+Tono: español latinoamericano natural y elegante. Cercano pero con clase — como una persona culta hablando con un amigo. Usa siempre tuteo (tú, te despiertas, tienes, puedes, haces). NUNCA uses voseo (vos, te despertás, tenés, podés, hacés). NUNCA uses modismos ni contracciones informales como 'pa', 'po', 've'. El tono es cálido, directo y sofisticado.`,
       },
     ],
   });
