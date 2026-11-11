@@ -15,13 +15,18 @@ export function OptinPendienteSync() {
     if (raw === null) return;
 
     const optin = raw === "true";
-    localStorage.removeItem(STORAGE_KEY);
 
     fetch("/api/marketing-optin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ optin }),
-    }).catch(() => {/* ignorar errores silenciosamente */});
+    })
+      .then((res) => {
+        if (res.ok) {
+          try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignorar */ }
+        }
+      })
+      .catch(() => {/* dejar la clave para reintento */});
   }, []);
 
   return null;
