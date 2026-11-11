@@ -15,7 +15,6 @@ export async function POST(request: Request) {
   );
 
   // 2. Si optin activo, suscribir a Brevo lista #4
-  console.log("[marketing-optin] optin:", optin, "BREVO_API_KEY set:", !!process.env.BREVO_API_KEY);
   if (optin && process.env.BREVO_API_KEY) {
     const { data: carta } = await supabase
       .from("carta_natal")
@@ -26,24 +25,19 @@ export async function POST(request: Request) {
     const signo: string | undefined =
       (carta?.planetas as { sol?: { sign?: string } } | null)?.sol?.sign;
 
-    const brevoPayload = {
-      email: user.email,
-      listIds: [4],
-      attributes: { SIGNO: signo ?? "" },
-      updateEnabled: true,
-    };
-    console.log("[marketing-optin] Enviando a Brevo:", JSON.stringify(brevoPayload));
-
-    const brevoRes = await fetch("https://api.brevo.com/v3/contacts", {
+    await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "api-key": process.env.BREVO_API_KEY,
       },
-      body: JSON.stringify(brevoPayload),
+      body: JSON.stringify({
+        email: user.email,
+        listIds: [4],
+        attributes: { SIGNO: signo ?? "" },
+        updateEnabled: true,
+      }),
     });
-    const brevoBody = await brevoRes.text();
-    console.log("[marketing-optin] Brevo respuesta:", brevoRes.status, brevoBody);
   }
 
   return NextResponse.json({ ok: true });
