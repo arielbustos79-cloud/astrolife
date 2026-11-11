@@ -3,6 +3,7 @@ import { BottomNav } from "@/components/ui/BottomNav";
 import { SignAndHoroscope } from "@/components/home/SignAndHoroscope";
 import { AstridCta } from "@/components/home/AstridCta";
 import { CartaPendienteSync } from "@/components/inicio/CartaPendienteSync";
+import { OptinPendienteSync } from "@/components/inicio/OptinPendienteSync";
 import { LunaChip } from "@/components/inicio/LunaChip";
 import { PwaBanner } from "@/components/ui/PwaBanner";
 
@@ -18,6 +19,7 @@ export default function InicioPage() {
   return (
     <div className="min-h-screen bg-home-bg pb-28">
       <CartaPendienteSync />
+      <OptinPendienteSync />
       <NavHeader variant="light" />
 
       <div className="bg-gradient-to-b from-violet/10 to-transparent px-5 pb-6 pt-1">

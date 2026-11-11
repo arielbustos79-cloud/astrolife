@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
+  const [optin, setOptin] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +30,9 @@ export default function LoginPage() {
       console.error("OTP error:", sbError.message, sbError.status);
       setError(`Error: ${sbError.message}`);
     } else {
+      try {
+        localStorage.setItem("astrolife:pending-optin", String(optin));
+      } catch { /* ignorar si localStorage no disponible */ }
       setSent(true);
     }
     setSending(false);
@@ -85,6 +89,18 @@ export default function LoginPage() {
               {error && (
                 <p className="text-[12px] text-red-400">{error}</p>
               )}
+
+              <label className="flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={optin}
+                  onChange={(e) => setOptin(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 flex-shrink-0 accent-gold"
+                />
+                <span className="text-[12px] leading-relaxed text-ink-muted">
+                  Quiero recibir el horóscopo semanal y novedades de AstroLife
+                </span>
+              </label>
 
               <button
                 type="submit"
