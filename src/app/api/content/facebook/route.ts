@@ -4,7 +4,7 @@ import { getTransitosGenerales } from "@/lib/transitos-cache";
 
 const client = new Anthropic();
 
-const TONO = `Escribe en español chileno. Tono cercano, cálido, directo. Tuteo (tú, tienes, puedes). Sin voseo. Sin markdown, sin asteriscos, sin hashtags. Máximo 150 palabras por post. No uses emojis excesivos — máximo 1 o 2 por post.`;
+const TONO = `Escribe en español chileno. Tono cercano, cálido, directo. Usa siempre tuteo (tú, tienes, puedes, vas). NUNCA uses voseo (vos, tenés, podés, hacés). Sin markdown, sin asteriscos, sin hashtags. Máximo 150 palabras por post. No uses emojis excesivos — máximo 1 o 2 por post.`;
 
 export async function GET() {
   try {
