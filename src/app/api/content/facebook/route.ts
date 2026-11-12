@@ -12,7 +12,7 @@ export async function GET() {
 
     const transitoResumen = transitos
       .slice(0, 3)
-      .map((t) => `${t.transito.planeta} en ${t.transito.signo}: ${t.descripcion}`)
+      .map((t) => `${t.planeta} en ${t.signo}: ${t.descripcion}`)
       .join("\n");
 
     const fechaBase = new Date();
