@@ -49,17 +49,18 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
   ].join(";");
   badgeEl.textContent = dia.toUpperCase();
 
-  // Símbolo zodiacal — glifo Unicode dorado, sin fondo ni borde
+  // Símbolo zodiacal — ︎ fuerza presentación texto (no emoji con caja de color)
   const symbolEl = document.createElement("div");
   symbolEl.style.cssText = [
     "font-size:72px",
     "line-height:1",
     "color:#C8A96E",
     "text-align:center",
-    "font-family:serif",
+    "font-family:'Segoe UI Symbol',serif",
+    "font-variant-emoji:text",
     "flex-shrink:0",
   ].join(";");
-  symbolEl.textContent = post.simbolo;
+  symbolEl.textContent = post.simbolo + "︎";
 
   const sep1 = document.createElement("div");
   sep1.style.cssText = "width:100%;height:1px;background:#2A1F3D;flex-shrink:0";
