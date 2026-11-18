@@ -28,7 +28,7 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
     "flex-direction:column",
     "align-items:center",
     "justify-content:space-between",
-    "padding:24px 28px 24px",
+    "padding:48px",
     "box-sizing:border-box",
     "z-index:99999",
     "font-family:sans-serif",
@@ -59,6 +59,7 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
     "font-family:'Segoe UI Symbol',serif",
     "font-variant-emoji:text",
     "flex-shrink:0",
+    "margin-bottom:24px",
   ].join(";");
   symbolEl.textContent = post.simbolo + "︎";
 
