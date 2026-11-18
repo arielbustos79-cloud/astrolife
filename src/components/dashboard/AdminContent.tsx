@@ -28,14 +28,37 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
     "flex-direction:column",
     "align-items:center",
     "justify-content:space-between",
-    "padding:32px 28px 24px",
+    "padding:24px 28px 24px",
     "box-sizing:border-box",
     "z-index:99999",
     "font-family:sans-serif",
   ].join(";");
 
+  // Badge del día — arriba centrado
+  const badgeEl = document.createElement("div");
+  badgeEl.style.cssText = [
+    "font-size:11px",
+    "letter-spacing:3px",
+    "color:#C8A96E",
+    "border:1px solid #C8A96E",
+    "border-radius:20px",
+    "padding:4px 12px",
+    "font-family:sans-serif",
+    "font-weight:600",
+    "flex-shrink:0",
+  ].join(";");
+  badgeEl.textContent = dia.toUpperCase();
+
+  // Símbolo zodiacal — glifo Unicode dorado, sin fondo ni borde
   const symbolEl = document.createElement("div");
-  symbolEl.style.cssText = "font-size:64px;line-height:1;color:#C8A96E;text-align:center;font-family:serif";
+  symbolEl.style.cssText = [
+    "font-size:72px",
+    "line-height:1",
+    "color:#C8A96E",
+    "text-align:center",
+    "font-family:serif",
+    "flex-shrink:0",
+  ].join(";");
   symbolEl.textContent = post.simbolo;
 
   const sep1 = document.createElement("div");
@@ -50,7 +73,7 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
     "font-size:13px",
     "line-height:1.65",
     "color:#F0EDE8",
-    "padding:12px 4px",
+    "padding:10px 4px",
     "overflow:hidden",
   ].join(";");
   textEl.textContent = post.texto;
@@ -58,31 +81,24 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
   const sep2 = document.createElement("div");
   sep2.style.cssText = "width:100%;height:1px;background:#2A1F3D;flex-shrink:0";
 
-  const footer = document.createElement("div");
-  footer.style.cssText = [
-    "display:flex",
-    "justify-content:space-between",
-    "align-items:center",
-    "width:100%",
-    "padding-top:12px",
-  ].join(";");
-
   const logoEl = document.createElement("div");
-  logoEl.style.cssText = "font-size:11px;letter-spacing:3px;color:#C8A96E;font-family:sans-serif;font-weight:600";
+  logoEl.style.cssText = [
+    "font-size:11px",
+    "letter-spacing:3px",
+    "color:#C8A96E",
+    "font-family:sans-serif",
+    "font-weight:600",
+    "padding-top:12px",
+    "flex-shrink:0",
+  ].join(";");
   logoEl.textContent = "ASTROLIFE.CL";
 
-  const diaEl = document.createElement("div");
-  diaEl.style.cssText = "font-size:10px;letter-spacing:1px;color:#888880;font-family:sans-serif;text-transform:uppercase";
-  diaEl.textContent = dia.toUpperCase();
-
-  footer.appendChild(logoEl);
-  footer.appendChild(diaEl);
-
+  wrap.appendChild(badgeEl);
   wrap.appendChild(symbolEl);
   wrap.appendChild(sep1);
   wrap.appendChild(textEl);
   wrap.appendChild(sep2);
-  wrap.appendChild(footer);
+  wrap.appendChild(logoEl);
 
   return wrap;
 }
