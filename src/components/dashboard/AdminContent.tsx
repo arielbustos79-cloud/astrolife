@@ -137,6 +137,7 @@ export function AdminContent() {
   const [loadingCarrusel, setLoadingCarrusel] = useState(false);
   const [errorCarrusel, setErrorCarrusel]     = useState<string | null>(null);
   const [downloadingSlide, setDownloadingSlide] = useState<number | null>(null);
+  const [downloadedSlide, setDownloadedSlide]   = useState<number | null>(null);
 
   async function generar() {
     setLoading(true); setError(null); setPosts(null);
@@ -198,6 +199,8 @@ export function AdminContent() {
       });
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      setDownloadedSlide(n);
+      setTimeout(() => setDownloadedSlide(null), 2500);
     } catch (err) { console.error("Error descargando slide:", err); }
     finally { setDownloadingSlide(null); }
   }
@@ -306,8 +309,8 @@ export function AdminContent() {
                 {mini}
                 <div style={s.sFoot}>
                   <span style={s.sNum}>{label}</span>
-                  <button onClick={() => descargarSlide(n)} disabled={downloadingSlide === n} style={{ ...s.btn, color: "#7B6FA0", opacity: downloadingSlide === n ? 0.5 : 1 }}>
-                    {downloadingSlide === n ? "…" : "Descargar"}
+                  <button onClick={() => descargarSlide(n)} disabled={downloadingSlide === n} style={{ ...s.btn, color: downloadedSlide === n ? "#C8A96E" : "#7B6FA0", opacity: downloadingSlide === n ? 0.5 : 1 }}>
+                    {downloadingSlide === n ? "…" : downloadedSlide === n ? "¡Listo!" : "Descargar"}
                   </button>
                 </div>
               </div>
