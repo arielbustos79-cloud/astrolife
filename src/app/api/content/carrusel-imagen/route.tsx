@@ -1,48 +1,28 @@
 import { ImageResponse } from "next/og";
 import { NextRequest, NextResponse } from "next/server";
+import { readFile } from "fs/promises";
+import { join } from "path";
 import React from "react";
 import type { CarruselData } from "@/app/api/content/carrusel/route";
 
-const SYMBOLS = "♈♉♊♋♌♍♎♏♐♑♒♓✦";
-
-// ─── Font cache (module-level) ────────────────────────────────────────────────
+// ─── Font cache (module-level, persists across warm invocations) ──────────────
 const cache = new Map<string, ArrayBuffer>();
 
-async function gfont(family: string, weight: number, italic = false): Promise<ArrayBuffer> {
-  const key = `${family}:${weight}:${italic}`;
-  if (cache.has(key)) return cache.get(key)!;
-  const q = italic
-    ? `family=${family.replace(/ /g, "+")}:ital,wght@1,${weight}`
-    : `family=${family.replace(/ /g, "+")}:wght@${weight}`;
-  const css = await fetch(`https://fonts.googleapis.com/css2?${q}&display=swap`, {
-    headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36" },
-  }).then((r) => r.text());
-  const urls = [...css.matchAll(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/g)].map((m) => m[1]);
-  if (!urls.length) throw new Error(`Font not found: ${family}`);
-  const data = await fetch(urls.at(-1)!).then((r) => r.arrayBuffer());
-  cache.set(key, data);
-  return data;
-}
-
-async function sfont(): Promise<ArrayBuffer> {
-  if (cache.has("symbols")) return cache.get("symbols")!;
-  const css = await fetch(
-    `https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&text=${encodeURIComponent(SYMBOLS)}&display=swap`,
-    { headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36" } }
-  ).then((r) => r.text());
-  const urls = [...css.matchAll(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/g)].map((m) => m[1]);
-  if (!urls.length) throw new Error("Symbols font not found");
-  const data = await fetch(urls[0]).then((r) => r.arrayBuffer());
-  cache.set("symbols", data);
-  return data;
+async function loadFont(filename: string): Promise<ArrayBuffer> {
+  if (cache.has(filename)) return cache.get(filename)!;
+  const buf = await readFile(join(process.cwd(), "public", "fonts", filename));
+  const ab = new ArrayBuffer(buf.length);
+  new Uint8Array(ab).set(buf);
+  cache.set(filename, ab);
+  return ab;
 }
 
 async function getFonts() {
-  const [playfair, inter, interItalic, symbols] = await Promise.all([
-    gfont("Playfair Display", 700),
-    gfont("Inter", 400),
-    gfont("Inter", 400, true),
-    sfont(),
+  const [inter, interItalic, playfair, symbols] = await Promise.all([
+    loadFont("inter-regular.ttf"),
+    loadFont("inter-italic.ttf"),
+    loadFont("playfair-bold.ttf"),
+    loadFont("noto-symbols2.ttf"),
   ]);
   return [
     { name: "Playfair Display", data: playfair, weight: 700 as const, style: "normal" as const },
