@@ -47,88 +47,6 @@ function buildPreviewEl(post: DayPost, dia: string): HTMLDivElement {
   return wrap;
 }
 
-// ─── Slide download elements (360×360, created off-screen) ───────────────────
-const CSS = {
-  base: "position:fixed;top:0;left:0;width:360px;height:360px;background:#100A1A;box-sizing:border-box;z-index:99999",
-  sep: "width:100%;height:1px;background:#2A1F3D;flex-shrink:0",
-  logo: "font-size:11px;letter-spacing:3px;color:#C8A96E;font-family:sans-serif;font-weight:600",
-  glifo: (size: number) => `font-size:${size}px;line-height:1;color:#C8A96E;font-family:'Segoe UI Symbol',serif;font-variant-emoji:text;text-align:center`,
-};
-
-function el(tag: string, css: string, text?: string): HTMLElement {
-  const e = document.createElement(tag);
-  e.style.cssText = css;
-  if (text !== undefined) e.textContent = text;
-  return e;
-}
-
-function buildSlide1(d: CarruselData["slide1"]): HTMLDivElement {
-  const wrap = el("div", `${CSS.base};display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:40px 36px 28px;font-family:sans-serif`) as HTMLDivElement;
-  const star = el("div", "font-size:52px;line-height:1;color:#C8A96E;font-family:serif;flex-shrink:0", "✦");
-  const sep1 = el("div", CSS.sep);
-  const mid = el("div", "flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 4px;text-align:center");
-  const title = el("p", "font-size:24px;font-family:'Playfair Display',Georgia,serif;color:#F0EDE8;text-align:center;margin:0;line-height:1.3;font-weight:700", d.titulo);
-  const sub = el("p", "font-size:13px;color:#888880;text-align:center;margin:0;line-height:1.5", d.subtitulo);
-  mid.append(title, sub);
-  const sep2 = el("div", CSS.sep);
-  const logo = el("p", `${CSS.logo};margin:0;padding-top:12px`, "ASTROLIFE.CL");
-  wrap.append(star, sep1, mid, sep2, logo);
-  return wrap;
-}
-
-function buildSlide2(d: CarruselData["slide2"]): HTMLDivElement {
-  const wrap = el("div", `${CSS.base};display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:40px 36px 28px;font-family:sans-serif`) as HTMLDivElement;
-  const top = el("div", "display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0");
-  const glifo = el("div", CSS.glifo(68), d.simbolo + "︎");
-  const nombre = el("p", "font-size:11px;letter-spacing:4px;color:#C8A96E;text-transform:uppercase;margin:0;font-weight:600", d.signo);
-  top.append(glifo, nombre);
-  const sep1 = el("div", CSS.sep);
-  const txt = el("p", "flex:1;font-size:13px;line-height:1.65;color:#F0EDE8;text-align:center;margin:0;display:flex;align-items:center;padding:0 4px", d.texto);
-  const sep2 = el("div", CSS.sep);
-  const logo = el("p", `${CSS.logo};margin:0;padding-top:12px`, "ASTROLIFE.CL");
-  wrap.append(top, sep1, txt, sep2, logo);
-  return wrap;
-}
-
-function buildSlide3(d: CarruselData["slide3"]): HTMLDivElement {
-  const wrap = el("div", `${CSS.base};display:flex;flex-direction:column;padding:32px 0 24px;font-family:sans-serif`) as HTMLDivElement;
-  const row = el("div", "display:flex;flex:1;align-items:center;width:100%");
-
-  const makeCol = (sym: string, signo: string, texto: string) => {
-    const col = el("div", "flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 20px");
-    col.append(
-      el("div", CSS.glifo(48), sym + "︎"),
-      el("p", "font-size:10px;letter-spacing:3px;color:#C8A96E;text-transform:uppercase;margin:0;font-weight:600", signo),
-      el("div", "width:100%;height:1px;background:#2A1F3D"),
-      el("p", "font-size:11px;line-height:1.6;color:#F0EDE8;text-align:center;margin:0", texto),
-    );
-    return col;
-  };
-
-  const vdiv = el("div", "width:1px;height:75%;background:#2A1F3D;flex-shrink:0");
-  row.append(makeCol(d.simbolo1, d.signo1, d.texto1), vdiv, makeCol(d.simbolo2, d.signo2, d.texto2));
-
-  const bottom = el("div", "width:100%;padding-top:16px");
-  bottom.append(el("div", "height:1px;background:#2A1F3D;margin-bottom:12px"), el("p", `${CSS.logo};margin:0;text-align:center`, "ASTROLIFE.CL"));
-  wrap.append(row, bottom);
-  return wrap;
-}
-
-function buildSlide4(d: CarruselData["slide4"]): HTMLDivElement {
-  const wrap = el("div", `${CSS.base};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 36px 28px;font-family:sans-serif`) as HTMLDivElement;
-  const star = el("div", "font-size:48px;line-height:1;color:#C8A96E;font-family:serif;flex-shrink:0", "✦");
-  const sep1 = el("div", CSS.sep);
-  const mid = el("div", "display:flex;flex-direction:column;align-items:center;gap:12px;flex:1;justify-content:center");
-  mid.append(
-    el("p", "font-size:17px;font-family:'Playfair Display',Georgia,serif;color:#F0EDE8;text-align:center;margin:0;line-height:1.4;font-weight:600", d.cta),
-    el("p", "font-size:12px;color:#888880;text-align:center;margin:0;font-style:italic", "Astrid te espera"),
-  );
-  const sep2 = el("div", CSS.sep);
-  const logo = el("p", "font-size:14px;letter-spacing:4px;color:#C8A96E;font-family:sans-serif;font-weight:700;margin:0;padding-top:4px", "ASTROLIFE.CL");
-  wrap.append(star, sep1, mid, sep2, logo);
-  return wrap;
-}
-
 // ─── Mini preview (180×180, native render — no transforms) ───────────────────
 const P: React.CSSProperties = { margin: 0 };
 const msep: React.CSSProperties = { width: "100%", height: 1, background: "#2A1F3D", flexShrink: 0 };
@@ -265,15 +183,22 @@ export function AdminContent() {
     if (!carrusel) return;
     setDownloadingSlide(n);
     try {
-      const { default: html2canvas } = await import("html2canvas");
-      const builders = [null, buildSlide1, buildSlide2, buildSlide3, buildSlide4] as const;
-      const domEl = builders[n]!(carrusel[`slide${n}` as keyof CarruselData] as never);
-      document.body.appendChild(domEl);
-      const canvas = await html2canvas(domEl, { scale: 3, backgroundColor: "#100A1A", useCORS: true, logging: false });
-      document.body.removeChild(domEl);
-      const a = Object.assign(document.createElement("a"), { href: canvas.toDataURL("image/png"), download: `astrolife-carrusel-slide-${n}.png` });
+      const key = `slide${n}` as keyof CarruselData;
+      const res = await fetch("/api/content/carrusel-imagen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slide: n, data: carrusel[key] }),
+      });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = Object.assign(document.createElement("a"), {
+        href: url,
+        download: `astrolife-carrusel-slide-${n}.png`,
+      });
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    } catch (err) { console.error("Error generando slide:", err); }
+      URL.revokeObjectURL(url);
+    } catch (err) { console.error("Error descargando slide:", err); }
     finally { setDownloadingSlide(null); }
   }
 
