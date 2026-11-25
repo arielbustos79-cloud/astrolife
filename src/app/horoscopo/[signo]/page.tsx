@@ -24,6 +24,14 @@ function fechaHoy() {
   });
 }
 
+function fechaCorta() {
+  return new Date().toLocaleDateString("es-CL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -32,10 +40,11 @@ export async function generateMetadata({
   const { signo } = await params;
   const sign = getZodiacSign(signo);
   const fecha = capitalize(fechaHoy());
+  const fechaT = fechaCorta();
 
   return {
-    title: `Horóscopo de ${sign.name} hoy — AstroLife.cl`,
-    description: `Horóscopo de ${sign.name} para hoy, ${fecha}. Generado por inteligencia artificial, actualizado cada día. Descubre qué te deparan los astros.`,
+    title: `Horóscopo de ${sign.name} hoy, ${fechaT} | AstroLife`,
+    description: `Horóscopo de ${sign.name} para hoy ${fecha}: qué dice el cosmos para tu signo. Carta natal real interpretada por IA en español. Gratis en AstroLife.cl.`,
     openGraph: {
       title: `Horóscopo ${sign.name} — ${fecha}`,
       description: `Tu horóscopo de ${sign.name} para hoy en AstroLife.cl`,

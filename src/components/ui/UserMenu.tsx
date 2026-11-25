@@ -147,6 +147,17 @@ export function UserMenu({ isLight }: { isLight: boolean }) {
                 ⭕ Mi carta natal
               </Link>
 
+              {email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 px-4 py-3 text-[14px] transition-colors hover:bg-white/5"
+                  style={{ color: "#F0EDE8" }}
+                >
+                  🛠 Panel Admin
+                </Link>
+              )}
+
               <div style={{ borderTop: "1px solid #2A1F3D", margin: "4px 0" }} />
 
               <button

@@ -17,6 +17,9 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://astrolife.cl"),
+  alternates: {
+    canonical: "/",
+  },
   title: "AstroLife — Horóscopo diario y carta natal con IA",
   description:
     "Carta natal gratis, horóscopo diario por signo y Astrid, una guía astrológica con IA en español. Calcula tu carta con tu fecha, hora y lugar.",
