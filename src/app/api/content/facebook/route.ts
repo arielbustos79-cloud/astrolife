@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       miercoles:"https://astrolife.cl/transitos",
       jueves:   "https://astrolife.cl/astrid",
       viernes:  `https://astrolife.cl/horoscopo/${signo}`,
-      sabado:   `https://astrolife.cl/horoscopo/${signo}`,
+      sabado:   "https://astrolife.cl/carta-natal",
       domingo:  "https://astrolife.cl/carta-natal",
     };
 
