@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { WeekPosts, DayPost } from "@/app/api/content/facebook/route";
 import type { CarruselData } from "@/app/api/content/carrusel/route";
 
@@ -271,6 +272,10 @@ export function AdminContent() {
   return (
     <div style={s.page}>
       <div style={s.inner}>
+
+        <Link href="/inicio" style={{ display: "inline-block", fontSize: 13, color: "#C8A96E", marginBottom: 24, textDecoration: "none" }}>
+          ← Inicio
+        </Link>
 
         {/* ── 7 posts ── */}
         <p style={s.label}>Panel Admin — Contenido semanal</p>
